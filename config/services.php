@@ -30,6 +30,11 @@ return [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 
+    'slack' => [
+        'token' => env('SLACK_LEGACY_TOKEN'),
+        'general_channel_id' => env('SLACK_GENERAL_CHANNEL'),
+    ],
+
     'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),

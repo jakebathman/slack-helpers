@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "66ca7343889332c2b8ecca11c251430c",
+    "content-hash": "d5a227e077a3d8e233d78c5386b3e7fb",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -3105,6 +3105,84 @@
             "time": "2018-10-30T17:29:25+00:00"
         },
         {
+            "name": "wgmv/laravel-slack-api",
+            "version": "v0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wgmv/laravel-slack-api.git",
+                "reference": "f6a6050866ac5fe63e9f5521a5a818fb310e3edf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wgmv/laravel-slack-api/zipball/f6a6050866ac5fe63e9f5521a5a818fb310e3edf",
+                "reference": "f6a6050866ac5fe63e9f5521a5a818fb310e3edf",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~5.3|~6.0",
+                "illuminate/cache": "~5.0",
+                "illuminate/support": "~5.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Wgmv\\SlackApi\\SlackApiServiceProvider"
+                    ],
+                    "aliases": {
+                        "SlackApi": "Wgmv\\SlackApi\\Facades\\SlackApi",
+                        "SlackChannel": "Wgmv\\SlackApi\\Facades\\SlackChannel",
+                        "SlackChat": "Wgmv\\SlackApi\\Facades\\SlackChat",
+                        "SlackGroup": "Wgmv\\SlackApi\\Facades\\SlackGroup",
+                        "SlackFile": "Wgmv\\SlackApi\\Facades\\SlackFile",
+                        "SlackSearch": "Wgmv\\SlackApi\\Facades\\SlackSearch",
+                        "SlackInstantMessage": "Wgmv\\SlackApi\\Facades\\SlackInstantMessage",
+                        "SlackUser": "Wgmv\\SlackApi\\Facades\\SlackUser",
+                        "SlackStar": "Wgmv\\SlackApi\\Facades\\SlackStar",
+                        "SlackUserAdmin": "Wgmv\\SlackApi\\Facades\\SlackUserAdmin",
+                        "SlackRealTimeMessage": "Wgmv\\SlackApi\\Facades\\SlackRealTimeMessage",
+                        "SlackTeam": "Wgmv\\SlackApi\\Facades\\SlackTeam"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Wgmv\\SlackApi\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "DBAD"
+            ],
+            "authors": [
+                {
+                    "name": "Vagner do Carmo",
+                    "email": "vluzrmos@gmail.com",
+                    "role": "Original author"
+                },
+                {
+                    "name": "Walter Vogel",
+                    "email": "walter@wgmv.de",
+                    "role": "Contributor"
+                }
+            ],
+            "description": "Wrapper for Slack.com WEB API.",
+            "keywords": [
+                "laravel",
+                "lumen",
+                "slack"
+            ],
+            "time": "2017-09-19T12:45:41+00:00"
+        },
+        {
             "name": "zendframework/zend-diactoros",
             "version": "1.8.6",
             "source": {
@@ -3170,6 +3248,50 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "adamwathan/laravel-preset",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adamwathan/laravel-preset.git",
+                "reference": "5848456a4eed24b0ff0f2205c60f248ed6ccb4ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adamwathan/laravel-preset/zipball/5848456a4eed24b0ff0f2205c60f248ed6ccb4ae",
+                "reference": "5848456a4eed24b0ff0f2205c60f248ed6ccb4ae",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^5.7"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "NothingWorks\\LaravelPreset\\PresetServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NothingWorks\\LaravelPreset\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Adam Wathan's Laravel Frontend Preset",
+            "keywords": [
+                "laravel",
+                "preset"
+            ],
+            "support": {
+                "source": "https://github.com/adamwathan/laravel-preset/tree/master",
+                "issues": "https://github.com/adamwathan/laravel-preset/issues"
+            },
+            "time": "2018-09-10T15:02:59+00:00"
+        },
         {
             "name": "beyondcode/laravel-dump-server",
             "version": "1.2.2",
@@ -4931,7 +5053,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "adamwathan/laravel-preset": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
