@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::get('in', 'GetStaffIn');
+
+Route::get('oauth/redirect', 'OAuthController@redirect')->name('oauth.redirect');

@@ -12,19 +12,21 @@ use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffIn extends Controller
 {
-    protected $generalChannelId;
+    protected $channelId;
     protected $client;
+    protected $teamId;
 
-    public function __construct()
+    public function __construct($teamId = null)
     {
-        $this->generalChannelId = config('services.slack.general_channel_id');
-        $this->client = new SlackClient($this->generalChannelId);
+        $this->channelId = config('services.slack.general_channel_id');
+        $this->teamId = $teamId ?? config('services.slack.team_id');
+        $this->client = new SlackClient($this->teamId);
         $this->users = $this->client->getUsers();
     }
 
     public function __invoke(Request $request)
     {
-        $messages = $this->client->getMessagesFromToday();
+        $messages = $this->client->getMessagesFromToday($this->channelId);
 
         // Group messages by user and filter only @in/@out/@lunch/@back
         $usersMessages = $messages->filter(function ($message) {

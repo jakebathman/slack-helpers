@@ -33,6 +33,9 @@ return [
     'slack' => [
         'token' => env('SLACK_LEGACY_TOKEN'),
         'general_channel_id' => env('SLACK_GENERAL_CHANNEL'),
+        'client_id' => env('SLACK_APP_CLIENT_ID'),
+        'client_secret' => env('SLACK_APP_CLIENT_SECRET'),
+        'team_id' => env('SLACK_TEAM_ID'),
     ],
 
     'stripe' => [

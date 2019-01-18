@@ -3,26 +3,36 @@
 namespace App;
 
 use DateTime;
+use Exception;
+use Wgmv\SlackApi\Facades\SlackApi;
 use Wgmv\SlackApi\Facades\SlackChannel;
 
 
 class SlackClient
 {
-    protected $groupId;
+    protected $teamId;
+    protected $slack;
 
-    public function __construct($groupId)
+    public function __construct($teamId)
     {
-        $this->groupId = $groupId;
+        $this->teamId = $teamId;
+        $token = Token::where('team_id', $teamId)->first();
+        if (!$token) {
+            throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url(), 401);
+        }
+        $this->slack = new SlackApi(Token::where('team_id', $teamId)->first()->access_token);
     }
 
     public function getUsers()
     {
-        return SlackUser::all()->mapWithKeys(function ($user) {
-            return [$user->slack_id => $user];
-        });
+        return SlackUser::where('team_id', $this->teamId)
+            ->get()
+            ->mapWithKeys(function ($user) {
+                return [$user->slack_id => $user];
+            });
     }
 
-    public function getMessagesFromToday()
+    public function getMessagesFromToday($channelId)
     {
         $earliestTime = (new DateTime())->setTime(8, 0)->format('U');
         $allMessages = collect();
@@ -36,7 +46,7 @@ class SlackClient
             }
 
             $data = SlackChannel::history(
-                $this->groupId,
+                $channelId,
                 200,
                 $latest
             );
