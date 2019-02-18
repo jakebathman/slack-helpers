@@ -59,7 +59,7 @@ class SlashIsIn extends Controller
 
         // Get the status of the mentioned person
         if ($info = $statuses->get($userMentionedId)) {
-            return "That person is *@" . $info['status'] . "*. Their last message was " . $info['since'] . ":\n> " . $info['last_message'];
+            return "@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}";
             $statuses->get($userMentionedId);
         }
 

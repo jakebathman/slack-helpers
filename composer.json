@@ -12,7 +12,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
-        "wgmv/laravel-slack-api": "^0.5.0"
+        "wgmv/laravel-slack-api": "^0.5.0",
+        "doctrine/dbal": "~2.3"
     },
     "require-dev": {
         "adamwathan/laravel-preset": "dev-master",

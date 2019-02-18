@@ -12,7 +12,6 @@ use Wgmv\SlackApi\Facades\SlackChannel;
 class SlackClient
 {
     protected $teamId;
-    // protected $slack;
 
     public function __construct($teamId)
     {
@@ -21,7 +20,6 @@ class SlackClient
         if (!$token) {
             throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url(), 401);
         }
-        // $this->slack = new SlackApi(Token::where('team_id', $teamId)->first()->access_token);
     }
 
     public function getUsers()

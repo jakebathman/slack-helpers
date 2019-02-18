@@ -64,19 +64,23 @@ class GetStaffIn extends Controller
         $statuses = [];
 
         foreach ($usersMessages as $userId => $messages) {
-            if (!$this->users->has($userId)) {
+            if ($this->userInfoNeedsUpdating($userId)) {
                 // Need to pull and save this user's info from Slack
                 $userInfo = SlackUserClient::info($userId)->user;
 
-                $user = SlackUser::create([
-                    'slack_id' => $userInfo->id,
-                    'team_id' => $userInfo->team_id,
-                    'name' => $userInfo->name,
-                    'color' => $userInfo->color,
-                    'real_name' => $userInfo->real_name,
-                    'tz' => $userInfo->tz,
-                    'updated' => $userInfo->updated,
-                    ]);
+                $user = SlackUser::updateOrCreate(
+                    [
+                        'slack_id' => $userInfo->id
+                    ],
+                    [
+                        'team_id' => $userInfo->team_id,
+                        'display_name' => $userInfo->profile->display_name,
+                        'color' => $userInfo->color,
+                        'real_name' => $userInfo->real_name,
+                        'tz' => $userInfo->tz,
+                        'updated' => $userInfo->updated,
+                    ]
+                );
 
                 $this->users->put($user->slack_id, $user);
             }
@@ -106,6 +110,7 @@ class GetStaffIn extends Controller
             $thisUser = $this->users[$userId];
             $statuses[$thisUser->slack_id] = [
                 'slack_id' => $thisUser->slack_id,
+                'display_name' => $thisUser->display_name,
                 'real_name' => $thisUser->real_name,
                 'status' => $status,
                 'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
@@ -125,5 +130,19 @@ class GetStaffIn extends Controller
                 'messages' => $usersMessages,
             ],
         ];
+    }
+
+    public function userInfoNeedsUpdating($userId)
+    {
+        if (! $this->users->has($userId)) {
+            return true;
+        }
+
+        $user = $this->users->get($userId);
+        $userInfoUpdatedAt = $user->updated_at;
+
+        if (Carbon::parse($userInfoUpdatedAt)->diffInDays() > 30) {
+            return true;
+        }
     }
 }
