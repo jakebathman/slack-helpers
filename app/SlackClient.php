@@ -33,7 +33,7 @@ class SlackClient
 
     public function getMessagesFromToday($channelId)
     {
-        $earliestTime = (new DateTime())->sub(new \DateInterval('P3D'))->setTime(8, 0)->format('U');
+        $earliestTime = (new DateTime())->setTime(8, 0)->format('U');
         $allMessages = collect();
         $earliestTs = null;
         $latest = null;

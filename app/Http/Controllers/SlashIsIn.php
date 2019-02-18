@@ -63,6 +63,6 @@ class SlashIsIn extends Controller
             $statuses->get($userMentionedId);
         }
 
-        return "I've not seen that person in #general yet, so you can assume they're *@out* right now.";
+        return "I've not seen @{$info['display_name']} in #general yet today, so you can assume they're *@out* right now.";
     }
 }
