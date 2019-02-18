@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Exceptions\SlackApiException;
 use DateTime;
 use Exception;
 use Wgmv\SlackApi\Facades\SlackApi;
@@ -11,7 +12,7 @@ use Wgmv\SlackApi\Facades\SlackChannel;
 class SlackClient
 {
     protected $teamId;
-    protected $slack;
+    // protected $slack;
 
     public function __construct($teamId)
     {
@@ -20,7 +21,7 @@ class SlackClient
         if (!$token) {
             throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url(), 401);
         }
-        $this->slack = new SlackApi(Token::where('team_id', $teamId)->first()->access_token);
+        // $this->slack = new SlackApi(Token::where('team_id', $teamId)->first()->access_token);
     }
 
     public function getUsers()
@@ -34,7 +35,7 @@ class SlackClient
 
     public function getMessagesFromToday($channelId)
     {
-        $earliestTime = (new DateTime())->setTime(8, 0)->format('U');
+        $earliestTime = (new DateTime())->sub(new \DateInterval('P3D'))->setTime(8, 0)->format('U');
         $allMessages = collect();
         $earliestTs = null;
         $latest = null;
@@ -51,7 +52,11 @@ class SlackClient
                 $latest
             );
 
-            $messages = collect((array)$data->messages)
+            if ($data->ok == false) {
+                throw new SlackApiException("Slack API returned an error while fetching the channel history. Error ID " . $data->error . ". More info at https://api.slack.com/methods/channels.history");
+            }
+
+            $messages = collect($data->messages)
                 ->filter(function ($message) use ($earliestTime) {
                     // Keeps messages after $earliestTime
                     return (int)$message->ts >= $earliestTime;

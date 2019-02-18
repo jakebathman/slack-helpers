@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Wgmv\SlackApi\Facades\SlackChannel;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
+use App\Exceptions\SlackApiException;
 
 class GetStaffIn extends Controller
 {
@@ -26,11 +27,30 @@ class GetStaffIn extends Controller
 
     public function __invoke(Request $request)
     {
-        $messages = $this->client->getMessagesFromToday($this->channelId);
+        return $this->getStatuses();
+    }
 
-        // Group messages by user and filter only @in/@out/@lunch/@back
+    public function getStatuses()
+    {
+        try {
+            $messages = $this->client->getMessagesFromToday($this->channelId);
+        } catch (SlackApiException $e) {
+            report($e);
+
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'data' => [
+                    'channel_id' => $this->channelId,
+                    'team_id' => $this->teamId,
+                    'exception_trace' => $e->getTrace(),
+                ],
+            ];
+        }
+
+        // Group messages by user and filter only @in/@brb/@out/@lunch/@back
         $usersMessages = $messages->filter(function ($message) {
-            return preg_match('/(@in|@out|@lunch|@?back)/i', $message->text);
+            return preg_match('/(@in|@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$|@out|@lunch|@?back)/i', $message->text);
         })
         ->mapToGroups(function ($message) {
             return [
@@ -65,24 +85,45 @@ class GetStaffIn extends Controller
             $lastMessage = array_get($messages->first(), 'text');
             $lastMessageTs = array_get($messages->first(), 'ts');
 
-            if (preg_match('/(@in)/i', $lastMessage)) {
-                $status = "in";
-            } elseif (preg_match('/(@out)/i', $lastMessage)) {
-                $status = "out";
-            } elseif (preg_match('/(@lunch)/i', $lastMessage)) {
-                $status = "lunch";
+            if (preg_match('/(@in|^in$)/i', $lastMessage)) {
+                $status = 'in';
+            } elseif (preg_match('/(@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)/i', $lastMessage)) {
+                // If it's been less than 20 minutes, they're on break
+                $timeSinceMessage = time() - $lastMessageTs;
+                if ($timeSinceMessage > (20 * 60)) {
+                    $status = 'in';
+                } else {
+                    $status = 'break';
+                }
+            } elseif (preg_match('/(@out|^out$)/i', $lastMessage)) {
+                $status = 'out';
+            } elseif (preg_match('/(@lunch|^lunch$)/i', $lastMessage)) {
+                $status = 'lunch';
             } elseif (preg_match('/(@?back)/i', $lastMessage)) {
-                $status = "in";
+                $status = 'in';
             }
-            $statuses[] = [
-                $this->users[$userId]->real_name => [
-                    'status' => $status,
-                    'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
-                    'last_message' => $lastMessage,
-                ]
+
+            $thisUser = $this->users[$userId];
+            $statuses[$thisUser->slack_id] = [
+                'slack_id' => $thisUser->slack_id,
+                'real_name' => $thisUser->real_name,
+                'status' => $status,
+                'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
+                'last_message' => $lastMessage,
+                'team_id' => $thisUser->team_id,
+                'tz' => $thisUser->tz,
             ];
         }
 
-        return compact('statuses', 'usersMessages');
+        return [
+            'status' => 'success',
+            'meta' => [
+                'user_status_count' => count($statuses),
+            ],
+            'data' => [
+                'statuses' => $statuses,
+                'messages' => $usersMessages,
+            ],
+        ];
     }
 }
