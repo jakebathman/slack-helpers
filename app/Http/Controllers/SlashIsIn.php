@@ -62,7 +62,7 @@ class SlashIsIn extends Controller
                     'break' => '2:coffee:',
                     ];
 
-                    return "{$emoji[$status['status']]} *@{$status['display_name']}";
+                    return "{$emoji[$status['status']]} @{$status['display_name']}";
                 }
             )
                 ->values()
