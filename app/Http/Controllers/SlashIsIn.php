@@ -56,7 +56,7 @@ class SlashIsIn extends Controller
             $statusText = $statuses->map(function ($status) {
                 $emoji = [
                     'in' => '1:wave:',
-                    'out' => '4:peace:',
+                    'out' => '4:v:',
                     'lunch' => '3:bento:',
                     'break' => '2:coffee:',
                 ];
