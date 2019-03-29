@@ -58,10 +58,10 @@ class SlashIsIn extends Controller
             $text = [];
             $groups = [
                 'in' => ':wave:',
-                'out' => ':v:',
-                'lunch' => ':bento:',
                 'break' => ':coffee:',
-                ];
+                'lunch' => ':bento:',
+                'out' => ':v:',
+            ];
 
             foreach ($groups as $group => $emoji) {
                 if (! $statusGroups->has($group)) {
