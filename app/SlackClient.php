@@ -5,9 +5,7 @@ namespace App;
 use App\Exceptions\SlackApiException;
 use DateTime;
 use Exception;
-use Wgmv\SlackApi\Facades\SlackApi;
 use Wgmv\SlackApi\Facades\SlackChannel;
-
 
 class SlackClient
 {
@@ -17,7 +15,7 @@ class SlackClient
     {
         $this->teamId = $teamId;
         $token = Token::where('team_id', $teamId)->first();
-        if (!$token) {
+        if (! $token) {
             throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url(), 401);
         }
     }
@@ -26,9 +24,11 @@ class SlackClient
     {
         return SlackUser::where('team_id', $this->teamId)
             ->get()
-            ->mapWithKeys(function ($user) {
-                return [$user->slack_id => $user];
-            });
+            ->mapWithKeys(
+                function ($user) {
+                    return [$user->slack_id => $user];
+                }
+            );
     }
 
     public function getMessagesFromToday($channelId)
@@ -51,14 +51,16 @@ class SlackClient
             );
 
             if ($data->ok == false) {
-                throw new SlackApiException("Slack API returned an error while fetching the channel history. Error ID " . $data->error . ". More info at https://api.slack.com/methods/channels.history");
+                throw new SlackApiException('Slack API returned an error while fetching the channel history. Error ID ' . $data->error . '. More info at https://api.slack.com/methods/channels.history');
             }
 
             $messages = collect($data->messages)
-                ->filter(function ($message) use ($earliestTime) {
-                    // Keeps messages after $earliestTime
-                    return (int)$message->ts >= $earliestTime;
-                });
+                ->filter(
+                    function ($message) use ($earliestTime) {
+                        // Keeps messages after $earliestTime
+                        return (int)$message->ts >= $earliestTime;
+                    }
+                );
 
             $lastMessageTs = $messages->last()->ts;
             $allMessages = $allMessages->merge($messages);

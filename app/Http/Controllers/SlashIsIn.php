@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\SlackClient;
+use App\SlackMessage;
 use App\SlackUser;
 use DateTime;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class SlashIsIn extends Controller
 {
+    protected $replyMessage;
 
     public function __construct($teamId = null)
     {
@@ -20,6 +22,7 @@ class SlashIsIn extends Controller
         $this->teamId = $teamId ?? config('services.slack.team_id');
         $this->client = new SlackClient($this->teamId);
         $this->users = $this->client->getUsers();
+        $this->replyMessage = new SlackMessage;
     }
 
     public function __invoke(Request $request)
@@ -30,39 +33,57 @@ class SlashIsIn extends Controller
         // Figure out who was @mentioned in the slash command
         // Slack escapes @mentions to look like <@U012ABCDEF>
         $pattern = "/\<@([\A-Z0-9]+)(?:\|[\w]+)?\>/";
-        if (! preg_match_all($pattern, $message, $mentions)) {
-            return "Make sure you're including a username, like */IsIn @someone*";
-        }
+        preg_match_all($pattern, $message, $mentions);
 
         if (count($mentions[1]) > 1) {
-            return "Only mention one person, so I know who you're looking for! E.g. */IsIn @someone*";
-        }
-
-        $userMentionedId = $mentions[1][0];
-
-        if ($userId == $userMentionedId) {
-            return Arr::random([
-                "Hey, wait a sec... You can't fool me! :robot_face:",
-                "I would think you'd know if you're in or out :thinking_face:",
-                "Maybe try tagging someone _else_ next time? :upside_down_face:",
-            ]);
+            return $this->reply("Only mention one person, so I know who you're looking for! E.g. */IsIn @someone*");
         }
 
         // Get the list of who's in
         $statusData = (new GetStaffIn())->getStatuses();
 
         if (array_get($statusData, 'status') != 'success') {
-            return "Sorry, something went wrong trying to look that up. Here's the error message:\n> " . array_get($statusData, 'message', '(No error message)');
+            return $this->reply(
+                "Sorry, something went wrong trying to look that up. Here's the error message:\n> "
+                . array_get($statusData, 'message', '(No error message)')
+            );
         }
 
         $statuses = collect(array_get($statusData, 'data.statuses'));
 
-        // Get the status of the mentioned person
-        if ($info = $statuses->get($userMentionedId)) {
-            return "@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}";
-            $statuses->get($userMentionedId);
+        if (empty($mentions[0])) {
+            // If no one was @mentioned, return all users that are @in (and specify those on break)
+            $statusText = $statuses->map(function ($status) {
+                $emoji = [
+                    'in' => '1:wave:',
+                    'out' => '4:v:',
+                    'lunch' => '3:bento:',
+                    'break' => '2:coffee:',
+                ];
+
+                return "{$emoji[$status['status']]} *@{$status['display_name']}";
+            })
+            ->values()
+            ->sort()
+            ->map(function ($status) {
+                return substr($status, 1);
+            });
+
+            return $this->reply($statusText->implode("\n"));
         }
 
-        return "I've not seen @{$info['display_name']} in #general yet today, so you can assume they're *@out* right now.";
+        // Get the status of the mentioned person
+        if ($info = $statuses->get($mentions[1][0])) {
+            return $this->reply("@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}");
+        }
+
+        return $this->reply("I've not seen @{$info['display_name']} in #general yet today, so you can assume they're *@out* right now.");
+    }
+
+    protected function reply($text)
+    {
+        return $this->replyMessage
+            ->text($text)
+            ->toString();
     }
 }
