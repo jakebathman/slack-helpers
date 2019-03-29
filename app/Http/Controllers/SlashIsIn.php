@@ -33,15 +33,11 @@ class SlashIsIn extends Controller
         // Figure out who was @mentioned in the slash command
         // Slack escapes @mentions to look like <@U012ABCDEF>
         $pattern = "/\<@([\A-Z0-9]+)(?:\|[\w]+)?\>/";
-        if (! preg_match_all($pattern, $message, $mentions)) {
-            return $this->reply("Make sure you're including a username, like */IsIn @someone*");
-        }
+        preg_match_all($pattern, $message, $mentions);
 
         if (count($mentions[1]) > 1) {
             return $this->reply("Only mention one person, so I know who you're looking for! E.g. */IsIn @someone*");
         }
-
-        $userMentionedId = $mentions[1][0];
 
         // Get the list of who's in
         $statusData = (new GetStaffIn())->getStatuses();
@@ -55,8 +51,29 @@ class SlashIsIn extends Controller
 
         $statuses = collect(array_get($statusData, 'data.statuses'));
 
+        if (empty($mentions[0])) {
+            // If no one was @mentioned, return all users that are @in (and specify those on break)
+            $statusText = $statuses->map(function ($status) {
+                $emoji = [
+                    'in' => '1:wave:',
+                    'out' => '4:peace:',
+                    'lunch' => '3:bento:',
+                    'break' => '2:coffee:',
+                ];
+
+                return "{$emoji[$status['status']]} *@{$status['display_name']}";
+            })
+            ->values()
+            ->sort()
+            ->map(function ($status) {
+                return substr($status, 1);
+            });
+
+            return $this->reply($statusText->implode("\n"));
+        }
+
         // Get the status of the mentioned person
-        if ($info = $statuses->get($userMentionedId)) {
+        if ($info = $statuses->get($mentions[1][0])) {
             return $this->reply("@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}");
         }
 
