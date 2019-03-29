@@ -43,14 +43,6 @@ class SlashIsIn extends Controller
 
         $userMentionedId = $mentions[1][0];
 
-        if ($userId == $userMentionedId) {
-            return Arr::random([
-                "Hey, wait a sec... You can't fool me! :robot_face:",
-                "I would think you'd know if you're in or out :thinking_face:",
-                "Maybe try tagging someone _else_ next time? :upside_down_face:",
-            ]);
-        }
-
         // Get the list of who's in
         $statusData = (new GetStaffIn())->getStatuses();
 
