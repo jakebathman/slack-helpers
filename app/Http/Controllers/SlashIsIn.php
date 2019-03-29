@@ -53,27 +53,32 @@ class SlashIsIn extends Controller
 
         if (empty($mentions[0])) {
             // If no one was @mentioned, return all users that are @in (and specify those on break)
-            $statusText = $statuses->map(
-                function ($status) {
-                    $emoji = [
-                    'in' => '1:wave:',
-                    'out' => '4:v:',
-                    'lunch' => '3:bento:',
-                    'break' => '2:coffee:',
-                    ];
+            $statusGroups = $statuses->groupBy('status');
 
-                    return "{$emoji[$status['status']]} @{$status['display_name']}";
+            $text = [];
+            $groups = [
+                'in' => ':wave:',
+                'out' => ':v:',
+                'lunch' => ':bento:',
+                'break' => ':coffee:',
+                ];
+
+            foreach ($groups as $group => $emoji) {
+                if (! $statusGroups->has($group)) {
+                    continue;
                 }
-            )
-                ->values()
-                ->sort()
-                ->map(
-                    function ($status) {
-                        return substr($status, 1);
-                    }
-                );
 
-            return $this->reply($statusText->implode("\n"));
+                $text[] = "*{$emoji} {$group}*";
+                $text[] = $statusGroups[$group]->map(
+                    function ($status) use ($emoji) {
+                        return "@{$status['display_name']}";
+                    }
+                )
+                    ->implode("\n");
+                $text[] = '';
+            }
+
+            return $this->reply(implode("\n", $text));
         }
 
         // Get the status of the mentioned person
