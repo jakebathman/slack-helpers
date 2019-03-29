@@ -50,7 +50,7 @@ class GetStaffIn extends Controller
 
         // Group messages by user and filter only @in/@brb/@out/@lunch/@back
         $usersMessages = $messages->filter(function ($message) {
-            return preg_match('/(@in|@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$|@out|@lunch|@?back)/i', $message->text);
+            return preg_match('/(@in|@brb|^brb$|@break|^:coffee:$|^:tea:(\s*?:timer_clock:)?$|@out|@lunch|@?back)/i', $message->text);
         })
             ->mapToGroups(function ($message) {
                 return [
@@ -86,38 +86,46 @@ class GetStaffIn extends Controller
             }
 
             // Determine status
-            $lastMessage = array_get($messages->first(), 'text');
-            $lastMessageTs = array_get($messages->first(), 'ts');
+            // Work backwards through messages (starting with most recent)
+            // so that any expired @break messages are skipped
+            foreach ($messages as $message) {
+                $lastMessage = array_get($message, 'text');
+                $lastMessageTs = array_get($message, 'ts');
 
-            if ($this->hasIn($lastMessage)) {
-                $status = 'in';
-            } elseif ($this->hasBreak($lastMessage)) {
-                // If it's been less than 20 minutes, they're on break
-                $timeSinceMessage = time() - $lastMessageTs;
-                if ($timeSinceMessage > (20 * 60)) {
+                if ($this->hasIn($lastMessage)) {
                     $status = 'in';
-                } else {
-                    $status = 'break';
+                } elseif ($this->hasBreak($lastMessage)) {
+                    // If it's been less than 20 minutes, they're on break
+                    $timeSinceMessage = time() - $lastMessageTs;
+                    if ($timeSinceMessage > (20 * 60)) {
+                        // Skip this message, go to the next one
+                        continue;
+                    } else {
+                        $status = 'break';
+                    }
+                } elseif ($this->hasOut($lastMessage)) {
+                    $status = 'out';
+                } elseif ($this->hasLunch($lastMessage)) {
+                    $status = 'lunch';
+                } elseif ($this->hasBack($lastMessage)) {
+                    $status = 'in';
                 }
-            } elseif ($this->hasOut($lastMessage)) {
-                $status = 'out';
-            } elseif ($this->hasLunch($lastMessage)) {
-                $status = 'lunch';
-            } elseif ($this->hasBack($lastMessage)) {
-                $status = 'in';
-            }
 
-            $thisUser = $this->users[$userId];
-            $statuses[$thisUser->slack_id] = [
-                'slack_id' => $thisUser->slack_id,
-                'display_name' => $thisUser->display_name,
-                'real_name' => $thisUser->real_name,
-                'status' => $status,
-                'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
-                'last_message' => $lastMessage,
-                'team_id' => $thisUser->team_id,
-                'tz' => $thisUser->tz,
-            ];
+                $thisUser = $this->users[$userId];
+                $statuses[$thisUser->slack_id] = [
+                    'slack_id' => $thisUser->slack_id,
+                    'display_name' => $thisUser->display_name,
+                    'real_name' => $thisUser->real_name,
+                    'status' => $status,
+                    'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
+                    'last_message' => $lastMessage,
+                    'team_id' => $thisUser->team_id,
+                    'tz' => $thisUser->tz,
+                ];
+
+                // Stop processing earlier messages, since this one set the status for the user
+                break;
+            }
         }
 
         return [
@@ -153,7 +161,7 @@ class GetStaffIn extends Controller
 
     public function hasBreak($text)
     {
-        return preg_match('/(@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)/i', $text);
+        return preg_match('/(@brb|@break|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)/i', $text);
     }
 
     public function hasLunch($text)
