@@ -52,14 +52,14 @@ class GetStaffIn extends Controller
         $usersMessages = $messages->filter(function ($message) {
             return preg_match('/(@in|@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$|@out|@lunch|@?back)/i', $message->text);
         })
-        ->mapToGroups(function ($message) {
-            return [
-                $message->user => [
-                'text' => $message->text,
-                'ts' => $message->ts,
-                ]
-            ];
-        });
+            ->mapToGroups(function ($message) {
+                return [
+                    $message->user => [
+                        'text' => $message->text,
+                        'ts' => $message->ts,
+                    ]
+                ];
+            });
 
         $statuses = [];
 
@@ -89,9 +89,9 @@ class GetStaffIn extends Controller
             $lastMessage = array_get($messages->first(), 'text');
             $lastMessageTs = array_get($messages->first(), 'ts');
 
-            if (preg_match('/(@in|^in$)/i', $lastMessage)) {
+            if ($this->hasIn($lastMessage)) {
                 $status = 'in';
-            } elseif (preg_match('/(@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)/i', $lastMessage)) {
+            } elseif ($this->hasBreak($lastMessage)) {
                 // If it's been less than 20 minutes, they're on break
                 $timeSinceMessage = time() - $lastMessageTs;
                 if ($timeSinceMessage > (20 * 60)) {
@@ -99,11 +99,11 @@ class GetStaffIn extends Controller
                 } else {
                     $status = 'break';
                 }
-            } elseif (preg_match('/(@out|^out$)/i', $lastMessage)) {
+            } elseif ($this->hasOut($lastMessage)) {
                 $status = 'out';
-            } elseif (preg_match('/(@lunch|^lunch$)/i', $lastMessage)) {
+            } elseif ($this->hasLunch($lastMessage)) {
                 $status = 'lunch';
-            } elseif (preg_match('/(@?back)/i', $lastMessage)) {
+            } elseif ($this->hasBack($lastMessage)) {
                 $status = 'in';
             }
 
@@ -134,7 +134,7 @@ class GetStaffIn extends Controller
 
     public function userInfoNeedsUpdating($userId)
     {
-        if (! $this->users->has($userId)) {
+        if (!$this->users->has($userId)) {
             return true;
         }
 
@@ -144,5 +144,30 @@ class GetStaffIn extends Controller
         if (Carbon::parse($userInfoUpdatedAt)->diffInDays() > 30) {
             return true;
         }
+    }
+
+    public function hasIn($text)
+    {
+        return preg_match('/(@in|^in$)/i', $text);
+    }
+
+    public function hasBreak($text)
+    {
+        return preg_match('/(@brb|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)/i', $text);
+    }
+
+    public function hasLunch($text)
+    {
+        return preg_match('/(@lunch|^lunch$)/i', $text);
+    }
+
+    public function hasBack($text)
+    {
+        return preg_match('/(@?back)/i', $text);
+    }
+
+    public function hasOut($text)
+    {
+        return preg_match('/(@out|^out$)/i', $text);
     }
 }
