@@ -53,21 +53,25 @@ class SlashIsIn extends Controller
 
         if (empty($mentions[0])) {
             // If no one was @mentioned, return all users that are @in (and specify those on break)
-            $statusText = $statuses->map(function ($status) {
-                $emoji = [
+            $statusText = $statuses->map(
+                function ($status) {
+                    $emoji = [
                     'in' => '1:wave:',
                     'out' => '4:v:',
                     'lunch' => '3:bento:',
                     'break' => '2:coffee:',
-                ];
+                    ];
 
-                return "{$emoji[$status['status']]} *@{$status['display_name']}";
-            })
-            ->values()
-            ->sort()
-            ->map(function ($status) {
-                return substr($status, 1);
-            });
+                    return "{$emoji[$status['status']]} *@{$status['display_name']}";
+                }
+            )
+                ->values()
+                ->sort()
+                ->map(
+                    function ($status) {
+                        return substr($status, 1);
+                    }
+                );
 
             return $this->reply($statusText->implode("\n"));
         }
@@ -82,8 +86,15 @@ class SlashIsIn extends Controller
 
     protected function reply($text)
     {
-        return $this->replyMessage
-            ->text($text)
-            ->toString();
+        return response(
+            $this->replyMessage
+                ->text($text)
+                ->toString()
+        )
+        ->withHeaders(
+            [
+            'Content-Type' => 'application/json',
+            ]
+        );
     }
 }
