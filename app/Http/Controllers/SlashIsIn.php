@@ -78,6 +78,10 @@ class SlashIsIn extends Controller
                 $text[] = '';
             }
 
+            if (count($text)==0) {
+                return $this->reply("Sorry, no one is @in right now :shrug:");
+            }
+
             return $this->reply(implode("\n", $text));
         }
 
