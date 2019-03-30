@@ -5,6 +5,7 @@ namespace App;
 use App\Exceptions\SlackApiException;
 use DateTime;
 use Exception;
+use Illuminate\Support\Carbon;
 use Wgmv\SlackApi\Facades\SlackChannel;
 
 class SlackClient
@@ -33,7 +34,7 @@ class SlackClient
 
     public function getMessagesFromToday($channelId)
     {
-        $earliestTime = (new DateTime())->setTime(8, 0)->format('U');
+        $earliestTime = Carbon::now()->setTime(8, 0)->format('U');
         $allMessages = collect();
         $earliestTs = null;
         $latest = null;
@@ -61,6 +62,10 @@ class SlackClient
                         return (int)$message->ts >= $earliestTime;
                     }
                 );
+
+            if ($messages->isEmpty()) {
+                return collect();
+            }
 
             $lastMessageTs = $messages->last()->ts;
             $allMessages = $allMessages->merge($messages);
