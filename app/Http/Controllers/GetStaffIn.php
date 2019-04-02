@@ -50,6 +50,11 @@ class GetStaffIn extends Controller
 
         // Group messages by user and filter only @in/@brb/@out/@lunch/@back
         $usersMessages = $messages->filter(function ($message) {
+            if (! isset($message->user)) {
+                // Filters out non-users (e.g. bots)
+                return false;
+            }
+
             return preg_match('/(@in|@brb|^brb$|@break|^:coffee:$|^:tea:(\s*?:timer_clock:)?$|@out|@lunch|@?back)/i', $message->text);
         })
             ->mapToGroups(function ($message) {
