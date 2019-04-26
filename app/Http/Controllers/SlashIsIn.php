@@ -16,17 +16,14 @@ class SlashIsIn extends Controller
 {
     protected $replyMessage;
 
-    public function __construct($teamId = null)
+    public function __invoke(Request $request, $teamId = null)
     {
         $this->channelId = config('services.slack.general_channel_id');
         $this->teamId = $teamId ?? config('services.slack.team_id');
         $this->client = new SlackClient($this->teamId);
         $this->users = $this->client->getUsers();
         $this->replyMessage = new SlackMessage;
-    }
 
-    public function __invoke(Request $request)
-    {
         $message = $request->get('text');
         $userId = $request->get('user_id');
 
@@ -40,12 +37,14 @@ class SlashIsIn extends Controller
         }
 
         // Get the list of who's in
-        $statusData = (new GetStaffIn())->getStatuses();
+        $statusData = (new GetStaffIn())
+            ->prepare($this->teamId)
+            ->getStatuses();
 
         if (array_get($statusData, 'status') != 'success') {
             return $this->reply(
                 "Sorry, something went wrong trying to look that up. Here's the error message:\n> "
-                . array_get($statusData, 'message', '(No error message)')
+                    . array_get($statusData, 'message', '(No error message)')
             );
         }
 
@@ -78,7 +77,7 @@ class SlashIsIn extends Controller
                 $text[] = '';
             }
 
-            if (count($text)==0) {
+            if (count($text) == 0) {
                 return $this->reply("Sorry, no one is @in right now :shrug:");
             }
 
@@ -90,7 +89,12 @@ class SlashIsIn extends Controller
             return $this->reply("@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}");
         }
 
-        return $this->reply("I've not seen @{$info['display_name']} in #general yet today, so you can assume they're *@out* right now.");
+        // Get the user's info
+        $userInfo = SlackUserClient::info($mentions[1][0])->user;
+
+        $displayName = strlen($userInfo->profile->display_name) > 0 ? $userInfo->profile->display_name : $userInfo->name;
+
+        return $this->reply("I've not seen @{$displayName} in #general yet today, so you can assume they're *@out* right now.");
     }
 
     protected function reply($text)
@@ -100,10 +104,10 @@ class SlashIsIn extends Controller
                 ->text($text)
                 ->toString()
         )
-        ->withHeaders(
-            [
-            'Content-Type' => 'application/json',
-            ]
-        );
+            ->withHeaders(
+                [
+                    'Content-Type' => 'application/json',
+                ]
+            );
     }
 }

@@ -16,9 +16,12 @@ class SlackClient
     {
         $this->teamId = $teamId;
         $token = Token::where('team_id', $teamId)->first();
-        if (! $token) {
-            throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url(), 401);
+        if (!$token) {
+            throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url('/'), 401);
         }
+
+        // set the token to the config for the SlackApi package to use
+        config(['services.slack.token' => $token->access_token]);
     }
 
     public function getUsers()
@@ -50,6 +53,7 @@ class SlackClient
                 200,
                 $latest
             );
+
 
             if ($data->ok == false) {
                 throw new SlackApiException('Slack API returned an error while fetching the channel history. Error ID ' . $data->error . '. More info at https://api.slack.com/methods/channels.history');

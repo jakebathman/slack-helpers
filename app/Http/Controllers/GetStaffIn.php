@@ -13,20 +13,30 @@ use App\Exceptions\SlackApiException;
 
 class GetStaffIn extends Controller
 {
+    const PREG_IN = '(@in|^in$)';
+    const PREG_BREAK = '(@brb|@break|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)';
+    const PREG_LUNCH = '(@lunch|^lunch$)';
+    const PREG_BACK = '(^@?back$)';
+    const PREG_OUT = '(@out|^out$|@ofnbl)';
+
     protected $channelId;
     protected $client;
     protected $teamId;
 
-    public function __construct($teamId = null)
+    public function prepare($teamId = null)
     {
-        $this->channelId = config('services.slack.general_channel_id');
         $this->teamId = $teamId ?? config('services.slack.team_id');
+        $this->channelId = config('services.slack.general_channel_id');
         $this->client = new SlackClient($this->teamId);
         $this->users = $this->client->getUsers();
+
+        return $this;
     }
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, $teamId = null)
     {
+        $this->prepare($teamId);
+
         return $this->getStatuses();
     }
 
@@ -50,12 +60,19 @@ class GetStaffIn extends Controller
 
         // Group messages by user and filter only @in/@brb/@out/@lunch/@back
         $usersMessages = $messages->filter(function ($message) {
-            if (! isset($message->user)) {
+            if (!isset($message->user)) {
                 // Filters out non-users (e.g. bots)
                 return false;
             }
 
-            return preg_match('/(@in|@brb|^brb$|@break|^:coffee:$|^:tea:(\s*?:timer_clock:)?$|@out|@lunch|@?back)/i', $message->text);
+            $pattern = $this->pregPattern(
+                self::PREG_IN,
+                self::PREG_BREAK,
+                self::PREG_OUT,
+                self::PREG_LUNCH,
+                self::PREG_BACK
+            );
+            return preg_match($pattern, $message->text);
         })
             ->mapToGroups(function ($message) {
                 return [
@@ -71,6 +88,7 @@ class GetStaffIn extends Controller
         foreach ($usersMessages as $userId => $messages) {
             if ($this->userInfoNeedsUpdating($userId)) {
                 // Need to pull and save this user's info from Slack
+
                 $userInfo = SlackUserClient::info($userId)->user;
 
                 $user = SlackUser::updateOrCreate(
@@ -161,26 +179,31 @@ class GetStaffIn extends Controller
 
     public function hasIn($text)
     {
-        return preg_match('/(@in|^in$)/i', $text);
+        return preg_match($this->pregPattern(self::PREG_IN), $text);
     }
 
     public function hasBreak($text)
     {
-        return preg_match('/(@brb|@break|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)/i', $text);
+        return preg_match($this->pregPattern(self::PREG_BREAK), $text);
     }
 
     public function hasLunch($text)
     {
-        return preg_match('/(@lunch|^lunch$)/i', $text);
+        return preg_match($this->pregPattern(self::PREG_LUNCH), $text);
     }
 
     public function hasBack($text)
     {
-        return preg_match('/(@?back)/i', $text);
+        return preg_match($this->pregPattern(self::PREG_BACK), $text);
     }
 
     public function hasOut($text)
     {
-        return preg_match('/(@out|^out$)/i', $text);
+        return preg_match($this->pregPattern(self::PREG_OUT), $text);
+    }
+
+    protected function pregPattern(...$patterns)
+    {
+        return '/(' . implode('|', $patterns) . ')/i';
     }
 }
