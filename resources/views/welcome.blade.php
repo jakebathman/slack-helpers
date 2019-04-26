@@ -29,7 +29,7 @@
 <div class="justify-center p-10">
     <h2 class="text-3xl text-teal font-sans text-center">Install @IsInBot</h2>
     <div class="text-center p-3">
-        <a href="https://slack.com/oauth/authorize?client_id=423337616818.437363470321&scope=chat:write:bot,channels:history,commands&redirect_uri={{ route('oauth.redirect') }}"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+        <a href="https://slack.com/oauth/authorize?client_id=423337616818.437363470321&scope=chat:write:bot,channels:history,commands,users:read&redirect_uri={{ route('oauth.redirect') }}"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
     </div>
 
 </div>
