@@ -11,5 +11,6 @@ action "Filter for master" {
 action "Trigger Forge Deployment" {
   uses = "swinton/httpie.action@master"
   needs = ["Filter for master"]
-  args = ["GET", "https://forge.laravel.com/servers/156510/sites/691686/deploy/http?token=WpKhsMJVxdBhRJC8WlgMTs0ngv2DlCzln2URhnca"]
+  args = ["GET", "FORGE_DEPLOY_URL"]
+  secrets = ["FORGE_DEPLOY_URL"]
 }
