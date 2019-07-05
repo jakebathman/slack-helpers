@@ -1,3 +1,5 @@
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=jakebathman/slack-helpers)](https://dependabot.com)
+
 ### Tighten Slack Helpers
 
 ## IsInBot
