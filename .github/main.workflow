@@ -9,8 +9,8 @@ action "Filter for master" {
 }
 
 action "Trigger Forge Deployment" {
-  uses = "swinton/httpie.action@master"
   needs = ["Filter for master"]
+  uses = "swinton/httpie.action@master"
   args = ["GET", "$FORGE_DEPLOY_URL"]
   secrets = ["FORGE_DEPLOY_URL"]
 }
