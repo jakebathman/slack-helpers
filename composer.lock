@@ -67,24 +67,24 @@
         },
         {
             "name": "bugsnag/bugsnag-laravel",
-            "version": "v2.16.0",
+            "version": "v2.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-laravel.git",
-                "reference": "a9922063076eabb0ad8be73fc2999f4105b71d7a"
+                "reference": "844da8f4e8eb1063c0df993972bb4ee0848c6859"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/a9922063076eabb0ad8be73fc2999f4105b71d7a",
-                "reference": "a9922063076eabb0ad8be73fc2999f4105b71d7a",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/844da8f4e8eb1063c0df993972bb4ee0848c6859",
+                "reference": "844da8f4e8eb1063c0df993972bb4ee0848c6859",
                 "shasum": ""
             },
             "require": {
                 "bugsnag/bugsnag": "^3.17.0",
                 "bugsnag/bugsnag-psr-logger": "^1.4",
-                "illuminate/contracts": "^5.0",
-                "illuminate/support": "^5.0",
-                "monolog/monolog": "^1.12",
+                "illuminate/contracts": "^5.0|^6.0",
+                "illuminate/support": "^5.0|^6.0",
+                "monolog/monolog": "^1.12|^2.0",
                 "php": ">=5.5"
             },
             "require-dev": {
@@ -123,20 +123,20 @@
                 "logging",
                 "tracking"
             ],
-            "time": "2019-06-14T15:07:24+00:00"
+            "time": "2019-09-10T10:36:03+00:00"
         },
         {
             "name": "bugsnag/bugsnag-psr-logger",
-            "version": "v1.4.1",
+            "version": "v1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-psr-logger.git",
-                "reference": "a9bed75b830cd1a702c888fdbb1e8b2b46af1ac0"
+                "reference": "aa05bc93a0a7164e4d36012a050f701ba7a9a9fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-psr-logger/zipball/a9bed75b830cd1a702c888fdbb1e8b2b46af1ac0",
-                "reference": "a9bed75b830cd1a702c888fdbb1e8b2b46af1ac0",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-psr-logger/zipball/aa05bc93a0a7164e4d36012a050f701ba7a9a9fe",
+                "reference": "aa05bc93a0a7164e4d36012a050f701ba7a9a9fe",
                 "shasum": ""
             },
             "require": {
@@ -152,7 +152,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -181,29 +181,29 @@
                 "psr",
                 "tracking"
             ],
-            "time": "2018-02-16T16:51:45+00:00"
+            "time": "2019-08-28T14:42:10+00:00"
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.1.4",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d"
+                "reference": "10bb96592168a0f8e8f6dcde3532d9fa50b0b527"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
-                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/10bb96592168a0f8e8f6dcde3532d9fa50b0b527",
+                "reference": "10bb96592168a0f8e8f6dcde3532d9fa50b0b527",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
                 "ext-pcre": "*",
-                "php": "^5.3.2 || ^7.0"
+                "php": "^5.3.2 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 8",
                 "psr/log": "^1.0",
                 "symfony/process": "^2.5 || ^3.0 || ^4.0"
             },
@@ -237,7 +237,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2019-01-28T09:30:10+00:00"
+            "time": "2019-08-30T08:44:50+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1625,16 +1625,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.24.0",
+            "version": "1.25.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266"
+                "reference": "70e65a5470a42cfec1a7da00d30edb6e617e8dcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266",
-                "reference": "bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/70e65a5470a42cfec1a7da00d30edb6e617e8dcf",
+                "reference": "70e65a5470a42cfec1a7da00d30edb6e617e8dcf",
                 "shasum": ""
             },
             "require": {
@@ -1699,7 +1699,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2018-11-05T09:00:11+00:00"
+            "time": "2019-09-06T13:49:17+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -4106,13 +4106,13 @@
             "authors": [
                 {
                     "name": "Vagner do Carmo",
-                    "email": "vluzrmos@gmail.com",
-                    "role": "Original author"
+                    "role": "Original author",
+                    "email": "vluzrmos@gmail.com"
                 },
                 {
                     "name": "Walter Vogel",
-                    "email": "walter@wgmv.de",
-                    "role": "Contributor"
+                    "role": "Contributor",
+                    "email": "walter@wgmv.de"
                 }
             ],
             "description": "Wrapper for Slack.com WEB API.",
@@ -5940,8 +5940,8 @@
             "authors": [
                 {
                     "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "arne@blankerts.de"
                 }
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
