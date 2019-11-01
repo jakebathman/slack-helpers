@@ -3,8 +3,11 @@
 namespace Tests\Feature;
 
 use App\Message;
+use App\SlackClient;
 use App\SlackUser;
+use App\Token;
 use Illuminate\Support\Arr;
+use Tests\Fakes\FakeSlackClient;
 use Tests\TestCase;
 use Wgmv\SlackApi\Facades\SlackChannel;
 
@@ -13,6 +16,11 @@ class GetStaffInTest extends TestCase
     /** @test */
     function it_can_get_correct_statuses_test()
     {
+        $token = factory(Token::class)->create();
+        $teamId = $token->team_id;
+        // app()->instance(SlackClient::class, (new FakeSlackClient($teamId)));
+        dump('teamId', $teamId);
+
         $users = factory(SlackUser::class, 5)->create();
         $messages = factory(Message::class, 10)->make([
             'user' => Arr::random($users->pluck('slack_id')->toArray()),
@@ -33,7 +41,7 @@ class GetStaffInTest extends TestCase
             ->withAnyArgs()
             ->andReturn($apiResponse);
 
-        $data = $this->get('in')->dump();
+        $data = $this->get(route('slash.in', ['teamId' => $teamId]));
 
         $this->assertTrue(true);
     }
