@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Token;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class OAuthController extends Controller
 {
@@ -12,12 +12,12 @@ class OAuthController extends Controller
 
     public function __construct()
     {
-        $this->client = new Client();
+        $this->client = new Client;
     }
 
     public function redirect()
     {
-        $code = request()->get('code', null);
+        $code = request('code', null);
 
         // Request a token using this code
         $response = $this->client->post('https://slack.com/api/oauth.access', [
@@ -31,23 +31,23 @@ class OAuthController extends Controller
 
         $data = json_decode($response->getBody(), true);
 
-        if ($error = array_get($data, 'error')) {
+        if ($error = Arr::get($data, 'error')) {
             return $error;
         }
 
         Token::updateOrCreate(
-            [ 'team_id' => array_get($data, 'team_id') ],
+            [ 'team_id' => Arr::get($data, 'team_id') ],
             [
-                'access_token' => array_get($data, 'access_token'),
-                'scope' => array_get($data, 'scope'),
-                'user_id' => array_get($data, 'user_id'),
-                'team_name' => array_get($data, 'team_name'),
-                'incoming_webhook_url' => array_get($data, 'incoming_webhook.url'),
-                'incoming_webhook_channel' => array_get($data, 'incoming_webhook.channel'),
-                'incoming_webhook_channel_id' => array_get($data, 'incoming_webhook.channel_id'),
-                'incoming_webhook_configuration_url' => array_get($data, 'incoming_webhook.configuration_url'),
-                'bot_user_id' => array_get($data, 'bot.bot_user_id'),
-                'bot_access_token' => array_get($data, 'bot.bot_access_token'),
+                'access_token' => Arr::get($data, 'access_token'),
+                'scope' => Arr::get($data, 'scope'),
+                'user_id' => Arr::get($data, 'user_id'),
+                'team_name' => Arr::get($data, 'team_name'),
+                'incoming_webhook_url' => Arr::get($data, 'incoming_webhook.url'),
+                'incoming_webhook_channel' => Arr::get($data, 'incoming_webhook.channel'),
+                'incoming_webhook_channel_id' => Arr::get($data, 'incoming_webhook.channel_id'),
+                'incoming_webhook_configuration_url' => Arr::get($data, 'incoming_webhook.configuration_url'),
+                'bot_user_id' => Arr::get($data, 'bot.bot_user_id'),
+                'bot_access_token' => Arr::get($data, 'bot.bot_access_token'),
             ]
         );
 

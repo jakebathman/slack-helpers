@@ -6,11 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateSlackUsersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('slack_users', function (Blueprint $table) {
@@ -28,11 +23,6 @@ class CreateSlackUsersTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('slack_users');

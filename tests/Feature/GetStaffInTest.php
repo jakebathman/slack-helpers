@@ -4,27 +4,14 @@ namespace Tests\Feature;
 
 use App\Message;
 use App\SlackUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
-use Mockery;
 use Tests\TestCase;
 use Wgmv\SlackApi\Facades\SlackChannel;
-use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffInTest extends TestCase
 {
-    protected function getChannelHistory()
-    {
-        return collect(
-            [
-
-            ]
-        );
-    }
-
     /** @test */
-    public function it_can_get_correct_statuses_test()
+    function it_can_get_correct_statuses_test()
     {
         $users = factory(SlackUser::class, 5)->create();
         $messages = factory(Message::class, 10)->make([
@@ -49,5 +36,14 @@ class GetStaffInTest extends TestCase
         $data = $this->get('in')->dump();
 
         $this->assertTrue(true);
+    }
+
+    function getChannelHistory()
+    {
+        return collect(
+            [
+
+            ]
+        );
     }
 }

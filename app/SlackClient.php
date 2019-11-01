@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Exceptions\SlackApiException;
-use DateTime;
 use Exception;
 use Illuminate\Support\Carbon;
 use Wgmv\SlackApi\Facades\SlackChannel;
@@ -16,7 +15,7 @@ class SlackClient
     {
         $this->teamId = $teamId;
         $token = Token::where('team_id', $teamId)->first();
-        if (!$token) {
+        if (! $token) {
             throw new Exception("TeamID {$teamId} not authorized. Install app to Slack at " . url('/'), 401);
         }
 

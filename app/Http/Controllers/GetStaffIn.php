@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use DateTime;
-use App\SlackUser;
-use App\SlackClient;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Wgmv\SlackApi\Facades\SlackChannel;
-use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 use App\Exceptions\SlackApiException;
+use App\SlackClient;
+use App\SlackUser;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
+use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffIn extends Controller
 {
@@ -60,7 +59,7 @@ class GetStaffIn extends Controller
 
         // Group messages by user and filter only @in/@brb/@out/@lunch/@back
         $usersMessages = $messages->filter(function ($message) {
-            if (!isset($message->user)) {
+            if (! isset($message->user)) {
                 // Filters out non-users (e.g. bots)
                 return false;
             }
@@ -79,7 +78,7 @@ class GetStaffIn extends Controller
                     $message->user => [
                         'text' => $message->text,
                         'ts' => $message->ts,
-                    ]
+                    ],
                 ];
             });
 
@@ -93,7 +92,7 @@ class GetStaffIn extends Controller
 
                 $user = SlackUser::updateOrCreate(
                     [
-                        'slack_id' => $userInfo->id
+                        'slack_id' => $userInfo->id,
                     ],
                     [
                         'team_id' => $userInfo->team_id,
@@ -112,8 +111,8 @@ class GetStaffIn extends Controller
             // Work backwards through messages (starting with most recent)
             // so that any expired @break messages are skipped
             foreach ($messages as $message) {
-                $lastMessage = array_get($message, 'text');
-                $lastMessageTs = array_get($message, 'ts');
+                $lastMessage = Arr::get($message, 'text');
+                $lastMessageTs = Arr::get($message, 'ts');
 
                 if ($this->hasIn($lastMessage)) {
                     $status = 'in';
@@ -165,7 +164,7 @@ class GetStaffIn extends Controller
 
     public function userInfoNeedsUpdating($userId)
     {
-        if (!$this->users->has($userId)) {
+        if (! $this->users->has($userId)) {
             return true;
         }
 

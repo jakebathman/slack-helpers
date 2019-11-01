@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use App\SlackClient;
 use App\SlackMessage;
-use App\SlackUser;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
-use Wgmv\SlackApi\Facades\SlackChannel;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class SlashIsIn extends Controller
@@ -37,18 +33,18 @@ class SlashIsIn extends Controller
         }
 
         // Get the list of who's in
-        $statusData = (new GetStaffIn())
+        $statusData = (new GetStaffIn)
             ->prepare($this->teamId)
             ->getStatuses();
 
-        if (array_get($statusData, 'status') != 'success') {
+        if (Arr::get($statusData, 'status') != 'success') {
             return $this->reply(
                 "Sorry, something went wrong trying to look that up. Here's the error message:\n> "
-                    . array_get($statusData, 'message', '(No error message)')
+                    . Arr::get($statusData, 'message', '(No error message)')
             );
         }
 
-        $statuses = collect(array_get($statusData, 'data.statuses'));
+        $statuses = collect(Arr::get($statusData, 'data.statuses'));
 
         if (empty($mentions[0])) {
             // If no one was @mentioned, return all users that are @in (and specify those on break)
