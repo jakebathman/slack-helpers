@@ -1,7 +1,6 @@
 <?php
 
 use Faker\Generator as Faker;
-use Illuminate\Support\Arr;
 
 $factory->define(App\SlackUser::class, function (Faker $faker) {
     return [
