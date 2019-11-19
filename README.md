@@ -1,3 +1,5 @@
+Note: this is an internal project. Don't try to set it up on your own. If you're interested in using it on your workspace, reach out to me on Twitter [@jakebathman](https://twitter.com/jakebathman) and I'd be happy to help you out.
+
 ### Tighten Slack Helpers
 
 ## IsInBot
