@@ -4,12 +4,16 @@ namespace Tests\Feature;
 
 use App\Message;
 use App\SlackClient;
+use App\SlackMessage;
 use App\SlackUser;
 use App\Token;
 use Illuminate\Support\Arr;
 use Tests\Fakes\FakeSlackClient;
+use Tests\Fakes\FakeSlackUserClient;
 use Tests\TestCase;
 use Wgmv\SlackApi\Facades\SlackChannel;
+use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
+use Wgmv\SlackApi\Facades\SlackApi;
 
 class GetStaffInTest extends TestCase
 {
@@ -18,13 +22,69 @@ class GetStaffInTest extends TestCase
     {
         $token = factory(Token::class)->create();
         $teamId = $token->team_id;
-        // app()->instance(SlackClient::class, (new FakeSlackClient($teamId)));
+        SlackUserClient::shouldReceive('info')
+        ->withAnyArgs()
+        ->andReturnUsing(function ($userId) {
+            $user = SlackUser::where('slack_id', $userId)->first();
+
+            return (object)[
+                'user' => (object)[
+                'id' => $user->slack_id,
+                'team_id' => $user->team_id,
+                'profile' => (object)[
+                    'display_name' => $user->display_name,
+                ],
+                'color' => $user->color,
+                'real_name' => $user->real_name,
+                'tz' => $user->tz,
+                'updated' => $user->updated,
+                ],
+            ];
+        });
+
+        SlackApi::shouldReceive('http', 'post')
+                ->withAnyArgs();
+
         dump('teamId', $teamId);
 
-        $users = factory(SlackUser::class, 5)->create();
-        $messages = factory(Message::class, 10)->make([
-            'user' => Arr::random($users->pluck('slack_id')->toArray()),
+        $users = factory(SlackUser::class, 5)->create([
+            'team_id' => $teamId,
         ]);
+
+        $messages = $users->map(function($user){
+            $m[] = factory(Message::class)->make([
+                'user' => $user->slack_id,
+                'text' => '@in',
+                'time' => time() - 100,
+                'team' => $user->team_id,
+            ]);
+
+            $m[] = factory(Message::class)->make([
+                'user' => $user->slack_id,
+                'text' => '@lunch',
+                'time' => time() - 50,
+                'team' => $user->team_id,
+            ]);
+
+            $m[] = factory(Message::class)->make([
+                'user' => $user->slack_id,
+                'text' => '@back',
+                'time' => time() - 25,
+                'team' => $user->team_id,
+            ]);
+
+            $m[] = factory(Message::class)->make([
+                'user' => $user->slack_id,
+                'text' => '@out',
+                'time' => time() - 10,
+                'team' => $user->team_id,
+            ]);
+
+            return $m;
+        })
+        ->flatten();
+
+        // dump($users->toArray());
 
         $apiResponse = (object)[
             'ok' => true,
@@ -32,26 +92,21 @@ class GetStaffInTest extends TestCase
             'has_more' => true,
         ];
 
+        // dd($apiResponse);
+
         // SlackUserClient::shouldReceive('info')
-        //     ->with('userId')
-        //     ->andReturn(factory(SlackUser::class)->make());
+        //     ->with('user')
+        //     ->andReturn((new FakeSlackUserClient())->info('user'));
 
         SlackChannel::shouldReceive('history')
-            ->once()
             ->withAnyArgs()
             ->andReturn($apiResponse);
 
         $data = $this->get(route('slash.in', ['teamId' => $teamId]));
+        // dd(route('slash.in', ['teamId' => $teamId]));
+        $data->dump();
 
         $this->assertTrue(true);
     }
 
-    function getChannelHistory()
-    {
-        return collect(
-            [
-
-            ]
-        );
-    }
 }

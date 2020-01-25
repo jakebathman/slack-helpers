@@ -12,7 +12,7 @@ $factory->define(Message::class, function (Faker $faker) {
     return [
         'client_msg_id' => $faker->uuid,
         'type' => 'message',
-        'text' => $faker->optional(0.85, $faker->randomElement($inOutMessages))->sentence(),
+        'text' => $faker->optional(.4, $faker->randomElement($inOutMessages))->sentence(),
         'user' => '',
         'ts' => time() - mt_rand(0, $maxOffsetSeconds),
         'team' => '',
