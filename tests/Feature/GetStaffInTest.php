@@ -45,13 +45,11 @@ class GetStaffInTest extends TestCase
         SlackApi::shouldReceive('http', 'post')
                 ->withAnyArgs();
 
-        dump('teamId', $teamId);
-
         $users = factory(SlackUser::class, 5)->create([
             'team_id' => $teamId,
         ]);
 
-        $messages = $users->map(function($user){
+        $messages = $users->map(function ($user) {
             $m[] = factory(Message::class)->make([
                 'user' => $user->slack_id,
                 'text' => '@in',
@@ -104,9 +102,10 @@ class GetStaffInTest extends TestCase
 
         $data = $this->get(route('slash.in', ['teamId' => $teamId]));
         // dd(route('slash.in', ['teamId' => $teamId]));
-        $data->dump();
+        // $data->dump();
+
+        $this->markTestIncomplete();
 
         $this->assertTrue(true);
     }
-
 }
