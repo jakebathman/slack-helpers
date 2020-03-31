@@ -7,6 +7,7 @@ use App\SlackClient;
 use App\SlackMessage;
 use App\SlackUser;
 use App\Token;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
 use Tests\Fakes\FakeSlackClient;
 use Tests\Fakes\FakeSlackUserClient;
@@ -17,6 +18,9 @@ use Wgmv\SlackApi\Facades\SlackApi;
 
 class GetStaffInTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     /** @test */
     function it_can_get_correct_statuses_test()
     {
