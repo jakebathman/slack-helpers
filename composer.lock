@@ -1054,16 +1054,16 @@
         },
         {
             "name": "jakebathman/laravel-slack-api",
-            "version": "v0.6.4",
+            "version": "v0.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakebathman/laravel-slack-api.git",
-                "reference": "efefde0bf5afa0ce0f7ca51757189d5b038b514c"
+                "reference": "0adf8d60d34b3193f0819a9367885b069e853583"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakebathman/laravel-slack-api/zipball/efefde0bf5afa0ce0f7ca51757189d5b038b514c",
-                "reference": "efefde0bf5afa0ce0f7ca51757189d5b038b514c",
+                "url": "https://api.github.com/repos/jakebathman/laravel-slack-api/zipball/0adf8d60d34b3193f0819a9367885b069e853583",
+                "reference": "0adf8d60d34b3193f0819a9367885b069e853583",
                 "shasum": ""
             },
             "require": {
@@ -1134,7 +1134,7 @@
                 "lumen",
                 "slack"
             ],
-            "time": "2019-11-01T21:37:04+00:00"
+            "time": "2020-03-31T21:46:49+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",
