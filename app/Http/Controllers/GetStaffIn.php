@@ -62,7 +62,6 @@ class GetStaffIn extends Controller
         $usersMessages = $messages->filter(function ($message) {
             if (! isset($message->user)) {
                 // Filters out non-users (e.g. bots)
-                dump('non-user');
                 return false;
             }
 
@@ -88,7 +87,6 @@ class GetStaffIn extends Controller
         foreach ($usersMessages as $userId => $messages) {
             if ($this->userInfoNeedsUpdating($userId)) {
                 // Need to pull and save this user's info from Slack
-                dump('updating user ' . $userId);
                 $userInfo = SlackUserClient::info($userId)->user;
 
                 $user = SlackUser::updateOrCreate(
