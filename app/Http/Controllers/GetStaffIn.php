@@ -12,11 +12,11 @@ use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffIn extends Controller
 {
-    const PREG_IN = '([@!]in|^in$)';
-    const PREG_BREAK = '([@!]brb|[@!]break|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)';
-    const PREG_LUNCH = '([@!]lunch|^lunch$)';
-    const PREG_BACK = '(^[@!]?back$)';
-    const PREG_OUT = '([@!]out|^out$|[@!]ofnbl)';
+    const PREG_IN = '([@!\+]in|^in$|^@ingrid$)';
+    const PREG_BREAK = '([@!\+]brb|[@!\+]break|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)';
+    const PREG_LUNCH = '([@!\+]lunch|^lunch$)';
+    const PREG_BACK = '(^[@!\+]?back$)';
+    const PREG_OUT = '([@!\+]out|^out$|[@!\+]ofnbl)';
 
     protected $channelId;
     protected $client;
