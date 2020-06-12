@@ -12,11 +12,11 @@ use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffIn extends Controller
 {
-    const PREG_IN = '([@!\+]in|^in$|^@ingrid$|^@​ingrid)';
-    const PREG_BREAK = '([@!\+]brb|[@!\+]break|^brb$|^:coffee:$|^:tea:(\s*?:timer_clock:)?$)';
-    const PREG_LUNCH = '([@!\+]lunch|^lunch$)';
-    const PREG_BACK = '(^[@!\+]?back$)';
-    const PREG_OUT = '([@!\+]out|^out$|[@!\+]ofnbl)';
+    const PREG_IN = '([@!\+](in|ingrid|​ingrid)([^\w]|$)|^in$)';
+    const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^:tea:(\s*?:timer_clock:)?$)';
+    const PREG_LUNCH = '([@!\+](lunch|brunch)([^\w]|$)|^lunch( time)?$)';
+    const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
+    const PREG_OUT = '([@!\+](out|ofnbl|oot|notin|vote|voting)([^\w]|$)|^out$)';
 
     protected $channelId;
     protected $client;
@@ -65,7 +65,7 @@ class GetStaffIn extends Controller
                 return false;
             }
 
-            $pattern = $this->pregPattern(
+            $pattern = self::pregPattern(
                 self::PREG_IN,
                 self::PREG_BREAK,
                 self::PREG_OUT,
@@ -113,9 +113,9 @@ class GetStaffIn extends Controller
                 $lastMessage = Arr::get($message, 'text');
                 $lastMessageTs = Arr::get($message, 'ts');
 
-                if ($this->hasIn($lastMessage)) {
+                if (self::hasIn($lastMessage)) {
                     $status = 'in';
-                } elseif ($this->hasBreak($lastMessage)) {
+                } elseif (self::hasBreak($lastMessage)) {
                     // If it's been less than 20 minutes, they're on break
                     $timeSinceMessage = time() - $lastMessageTs;
                     if ($timeSinceMessage > (20 * 60)) {
@@ -124,11 +124,11 @@ class GetStaffIn extends Controller
                     } else {
                         $status = 'break';
                     }
-                } elseif ($this->hasOut($lastMessage)) {
+                } elseif (self::hasOut($lastMessage)) {
                     $status = 'out';
-                } elseif ($this->hasLunch($lastMessage)) {
+                } elseif (self::hasLunch($lastMessage)) {
                     $status = 'lunch';
-                } elseif ($this->hasBack($lastMessage)) {
+                } elseif (self::hasBack($lastMessage)) {
                     $status = 'in';
                 }
 
@@ -175,32 +175,32 @@ class GetStaffIn extends Controller
         }
     }
 
-    public function hasIn($text)
+    public static function hasIn($text)
     {
-        return preg_match($this->pregPattern(self::PREG_IN), $text);
+        return preg_match(self::pregPattern(self::PREG_IN), $text);
     }
 
-    public function hasBreak($text)
+    public static function hasBreak($text)
     {
-        return preg_match($this->pregPattern(self::PREG_BREAK), $text);
+        return preg_match(self::pregPattern(self::PREG_BREAK), $text);
     }
 
-    public function hasLunch($text)
+    public static function hasLunch($text)
     {
-        return preg_match($this->pregPattern(self::PREG_LUNCH), $text);
+        return preg_match(self::pregPattern(self::PREG_LUNCH), $text);
     }
 
-    public function hasBack($text)
+    public static function hasBack($text)
     {
-        return preg_match($this->pregPattern(self::PREG_BACK), $text);
+        return preg_match(self::pregPattern(self::PREG_BACK), $text);
     }
 
-    public function hasOut($text)
+    public static function hasOut($text)
     {
-        return preg_match($this->pregPattern(self::PREG_OUT), $text);
+        return preg_match(self::pregPattern(self::PREG_OUT), $text);
     }
 
-    protected function pregPattern(...$patterns)
+    public static function pregPattern(...$patterns)
     {
         return '/(' . implode('|', $patterns) . ')/i';
     }
