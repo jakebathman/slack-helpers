@@ -121,6 +121,7 @@ class StatusMatchTest extends TestCase
             '@notin',
             '@vote',
             '@voting',
+            '@ofn',
         ];
 
         $false = [

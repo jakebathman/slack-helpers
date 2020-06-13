@@ -3,26 +3,20 @@
 namespace Tests\Feature;
 
 use App\Message;
-use App\SlackClient;
-use App\SlackMessage;
 use App\SlackUser;
 use App\Token;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
-use Tests\Fakes\FakeSlackClient;
-use Tests\Fakes\FakeSlackUserClient;
 use Tests\TestCase;
+use Wgmv\SlackApi\Facades\SlackApi;
 use Wgmv\SlackApi\Facades\SlackChannel;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
-use Wgmv\SlackApi\Facades\SlackApi;
 
 class GetStaffInTest extends TestCase
 {
-
     use RefreshDatabase;
 
     /** @test */
-    function it_can_get_correct_statuses_test()
+    function it_can_get_correct_statuses()
     {
         $token = factory(Token::class)->create();
         $teamId = $token->team_id;
@@ -104,8 +98,8 @@ class GetStaffInTest extends TestCase
             ->withAnyArgs()
             ->andReturn($apiResponse);
 
-        $data = $this->get(route('slash.in', ['teamId' => $teamId]));
-        // dd(route('slash.in', ['teamId' => $teamId]));
+        $data = $this->get(route('in', ['teamId' => $teamId]));
+        // dd(route('in', ['teamId' => $teamId]));
         // $data->dump();
 
         $this->markTestIncomplete();

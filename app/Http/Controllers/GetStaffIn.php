@@ -16,7 +16,7 @@ class GetStaffIn extends Controller
     const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^:tea:(\s*?:timer_clock:)?$)';
     const PREG_LUNCH = '([@!\+](lunch|brunch)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
-    const PREG_OUT = '([@!\+](out|ofnbl|oot|notin|vote|voting)([^\w]|$)|^out$)';
+    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting)([^\w]|$)|^out$)';
 
     protected $channelId;
     protected $client;
