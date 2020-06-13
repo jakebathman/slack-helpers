@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\SlackClient;
 use App\SlackMessage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
@@ -12,20 +11,28 @@ class SlashIsIn extends Controller
 {
     protected $replyMessage;
 
-    public function __invoke(Request $request, $teamId = null)
+    public function __invoke($teamId = null)
     {
         $this->channelId = config('services.slack.general_channel_id');
         $this->teamId = $teamId ?? config('services.slack.team_id');
         $this->client = new SlackClient($this->teamId);
+        $userId = request('user_id');
+
+        // Check if this user is allowed
+        $userInfo = $this->client->getUserInfo($userId);
+
+        if (! self::callingUserAllowed($userInfo)) {
+            return 'Sorry, this command is not available to Single Channel Guests.';
+        }
+
         $this->users = $this->client->getUsers();
         $this->replyMessage = new SlackMessage;
 
-        $message = $request->get('text');
-        $userId = $request->get('user_id');
+        $message = request('text');
 
         // Figure out who was @mentioned in the slash command
         // Slack escapes @mentions to look like <@U012ABCDEF>
-        $pattern = "/\<@([A-Z0-9]+)(?:\|[\w]+)?\>/";
+        $pattern = '/\<@([A-Z0-9]+)(?:\|[\w]+)?\>/';
         preg_match_all($pattern, $message, $mentions);
 
         if (count($mentions[1]) > 1) {
@@ -74,7 +81,7 @@ class SlashIsIn extends Controller
             }
 
             if (count($text) == 0) {
-                return $this->reply("Sorry, no one is @in right now :shrug:");
+                return $this->reply('Sorry, no one is @in right now :shrug:');
             }
 
             return $this->reply(implode("\n", $text));
@@ -105,5 +112,25 @@ class SlashIsIn extends Controller
                     'Content-Type' => 'application/json',
                 ]
             );
+    }
+
+    public static function callingUserAllowed($user)
+    {
+        return static::isNormalUser($user);
+    }
+
+    public static function isSingleChannelGuest($user)
+    {
+        return Arr::get($user, 'is_ultra_restricted', false) && Arr::get($user, 'is_restricted', false);
+    }
+
+    public static function isMultiChannelGuest($user)
+    {
+        return Arr::get($user, 'is_restricted', false) && ! Arr::get($user, 'is_ultra_restricted', false);
+    }
+
+    public static function isNormalUser($user)
+    {
+        return ! static::isSingleChannelGuest($user) && ! static::isMultiChannelGuest($user);
     }
 }

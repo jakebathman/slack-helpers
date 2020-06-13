@@ -3,13 +3,21 @@
 namespace App;
 
 use App\Exceptions\SlackApiException;
+use App\SlackUser;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Wgmv\SlackApi\Facades\SlackChannel;
 
 class SlackClient
 {
+    const BASE = 'https://slack.com/api/';
+
     protected $teamId;
+
+    private $token;
 
     public function __construct($teamId)
     {
@@ -20,18 +28,33 @@ class SlackClient
         }
 
         // set the token to the config for the SlackApi package to use
+        $this->token = $token->access_token;
         config(['services.slack.token' => $token->access_token]);
     }
 
     public function getUsers()
     {
         return SlackUser::where('team_id', $this->teamId)
-            ->get()
-            ->mapWithKeys(
-                function ($user) {
-                    return [$user->slack_id => $user];
-                }
-            );
+        ->get()
+        ->mapWithKeys(
+            function ($user) {
+                return [$user->slack_id => $user];
+            }
+        );
+    }
+
+    public function getUserInfo($userId)
+    {
+        $endpoint = static::BASE . 'users.info';
+
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])
+        ->post($endpoint, [
+            'user' => $userId,
+        ]);
+
+        return Arr::get($response, 'user', []);
     }
 
     public function getMessagesFromToday($channelId)
