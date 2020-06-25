@@ -19,6 +19,7 @@ class StatusMatchTest extends TestCase
             '@ingrid',
             '@​ingrid', // this has a zero-width space (U+200B) after @
             "I'm finally @in!",
+            '@innie',
         ];
 
         $false = [

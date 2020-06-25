@@ -71,12 +71,12 @@ class SlashIsIn extends Controller
                 }
 
                 $text[] = "*{$emoji} {$group}*";
-                $text[] = $statusGroups[$group]->map(
-                    function ($status) use ($emoji) {
+                $text[] = $statusGroups[$group]->map(function ($status) use ($emoji) {
                         return "@{$status['display_name']}";
-                    }
-                )
-                    ->implode("\n");
+                })
+                ->sort()
+                ->implode("\n");
+
                 $text[] = '';
             }
 
