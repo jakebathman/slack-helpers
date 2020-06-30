@@ -12,7 +12,7 @@ use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffIn extends Controller
 {
-    const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie)([^\w]|$)|^in$)';
+    const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
     const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^:tea:(\s*?:timer_clock:)?$)';
     const PREG_LUNCH = '([@!\+](lunch|brunch)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
