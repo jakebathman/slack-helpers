@@ -13,7 +13,6 @@ class FakeSlackUserClient
     }
     public function info($userId)
     {
-        dd('fake user',$userId);
         $user = SlackUser::find();
 
         return (object)[
