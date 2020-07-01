@@ -2,108 +2,95 @@
 
 namespace Tests\Feature;
 
-use App\Message;
+use App\Factories\SlackApiMessageFactory;
+use App\Http\Controllers\GetStaffIn;
 use App\SlackUser;
-use App\Token;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Wgmv\SlackApi\Facades\SlackApi;
-use Wgmv\SlackApi\Facades\SlackChannel;
-use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffInTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    function it_can_get_correct_statuses()
+    function it_can_get_correct_out_user_status()
     {
-        $token = factory(Token::class)->create();
-        $teamId = $token->team_id;
-        SlackUserClient::shouldReceive('info')
-        ->withAnyArgs()
-        ->andReturnUsing(function ($userId) {
-            $user = SlackUser::where('slack_id', $userId)->first();
+        $user = factory(SlackUser::class)->create();
+        $userId = $user->slack_id;
 
-            return (object)[
-                'user' => (object)[
-                'id' => $user->slack_id,
-                'team_id' => $user->team_id,
-                'profile' => (object)[
-                    'display_name' => $user->display_name,
-                ],
-                'color' => $user->color,
-                'real_name' => $user->real_name,
-                'tz' => $user->tz,
-                'updated' => $user->updated,
-                ],
-            ];
-        });
+        // Make some messages for the user,
+        // with status message interspersed
+        $messages = collect()
+            ->merge((new SlackApiMessageFactory)->withText('@in')->create())
+            ->merge((new SlackApiMessageFactory)->withText('@out')->create())
+            ->toArray();
 
-        SlackApi::shouldReceive('http', 'post')
-                ->withAnyArgs();
+        $status = (new GetStaffIn)->getUserStatus($user, $messages);
 
-        $users = factory(SlackUser::class, 5)->create([
-            'team_id' => $teamId,
-        ]);
+        $this->assertEquals($status['slack_id'], $userId);
+        $this->assertEquals($status['last_message'], '@out');
+        $this->assertEquals($status['status'], 'out');
+    }
 
-        $messages = $users->map(function ($user) {
-            $m[] = factory(Message::class)->make([
-                'user' => $user->slack_id,
-                'text' => '@in',
-                'time' => time() - 100,
-                'team' => $user->team_id,
-            ]);
+    /** @test */
+    function it_can_get_correct_in_user_status()
+    {
+        $user = factory(SlackUser::class)->create();
+        $userId = $user->slack_id;
 
-            $m[] = factory(Message::class)->make([
-                'user' => $user->slack_id,
-                'text' => '@lunch',
-                'time' => time() - 50,
-                'team' => $user->team_id,
-            ]);
+        // Make some messages for the user,
+        // with status message interspersed
+        $messages = collect()
+            ->merge((new SlackApiMessageFactory)->withText('@in')->create())
+            ->merge((new SlackApiMessageFactory)->times(2)->create())
+            ->toArray();
 
-            $m[] = factory(Message::class)->make([
-                'user' => $user->slack_id,
-                'text' => '@back',
-                'time' => time() - 25,
-                'team' => $user->team_id,
-            ]);
+        $status = (new GetStaffIn)->getUserStatus($user, $messages);
 
-            $m[] = factory(Message::class)->make([
-                'user' => $user->slack_id,
-                'text' => '@out',
-                'time' => time() - 10,
-                'team' => $user->team_id,
-            ]);
+        $this->assertEquals($status['slack_id'], $userId);
+        $this->assertEquals($status['last_message'], '@in');
+        $this->assertEquals($status['status'], 'in');
+    }
 
-            return $m;
-        })
-        ->flatten();
+    /** @test */
+    function it_prepares_user_messages()
+    {
+        $messages = collect()
+            ->merge((new SlackApiMessageFactory)->times(2)->create())
+            ->merge((new SlackApiMessageFactory)->withText('@in')->create())
+            ->merge((new SlackApiMessageFactory)->times(3)->create())
+            ->merge((new SlackApiMessageFactory)->withText('@out')->create())
+            ->merge((new SlackApiMessageFactory)->times(5)->create())
+            ->toArray();
 
-        // dump($users->toArray());
+        $this->assertCount(12, $messages);
 
-        $apiResponse = (object)[
-            'ok' => true,
-            'messages' => $messages,
-            'has_more' => true,
+        $prepared = (new GetStaffIn)->prepareMessages($messages);
+
+        $this->assertCount(2, $prepared);
+        $this->assertEquals('@out', $prepared->first()['text']);
+        $this->assertEquals('@in', $prepared->last()['text']);
+    }
+
+    /** @test */
+    function it_parses_at_mentions_to_text()
+    {
+        // Only user group and special mentions should be parsed
+        $strings = [
+            '<!subteam^S12345678|@foo>' => '@foo',
+            '<!here>' => '@here',
+            '<!channel>' => '@channel',
+            '<!everyone>' => '@everyone',
+            '<!subteam^S12345678|@foo> and <!subteam^S98765432|@bar>' => '@foo and @bar',
+
+            // These should all return unchanged
+            '<@U1234ABCD>' => '<@U1234ABCD>',
+            '<#C0838UC2D|general>' => '<#C0838UC2D|general>',
+            '<http://example.com|example link>' => '<http://example.com|example link>',
         ];
 
-        // dd($apiResponse);
-
-        // SlackUserClient::shouldReceive('info')
-        //     ->with('user')
-        //     ->andReturn((new FakeSlackUserClient())->info('user'));
-
-        SlackChannel::shouldReceive('history')
-            ->withAnyArgs()
-            ->andReturn($apiResponse);
-
-        $data = $this->get(route('in', ['teamId' => $teamId]));
-        // dd(route('in', ['teamId' => $teamId]));
-        // $data->dump();
-
-        $this->markTestIncomplete();
-
-        $this->assertTrue(true);
+        foreach ($strings as $input => $output) {
+            $this->assertEquals($output, GetStaffIn::parseSpecialMentionsToText($input));
+        }
     }
 }

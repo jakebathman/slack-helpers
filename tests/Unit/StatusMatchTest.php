@@ -75,6 +75,9 @@ class StatusMatchTest extends TestCase
             'grabbing @lunch',
             'lunch time',
             '@brunch',
+            '@lunching',
+            '@snack',
+            '@snacking',
         ];
 
         $false = [

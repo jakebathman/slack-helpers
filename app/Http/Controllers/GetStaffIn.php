@@ -14,9 +14,13 @@ class GetStaffIn extends Controller
 {
     const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
     const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^:tea:(\s*?:timer_clock:)?$)';
-    const PREG_LUNCH = '([@!\+](lunch|brunch)([^\w]|$)|^lunch( time)?$)';
+    const PREG_LUNCH = '([@!\+](lunch|brunch|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
     const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting)([^\w]|$)|^out$)';
+    const PREG_SUBTEAM_MENTION = '/\<\!subteam\^(?:[A-Z0-9]+)(?:\|(.*?))?\>/i';
+    const PREG_SPECIAL_MENTION = '/\<\!(here|channel|everyone)\>/i';
+
+    public $statuses = [];
 
     protected $channelId;
     protected $client;
@@ -58,13 +62,121 @@ class GetStaffIn extends Controller
             ];
         }
 
+
         // Group messages by user and filter only @in/@brb/@out/@lunch/@back
-        $usersMessages = $messages->filter(function ($message) {
-            if (! isset($message->user)) {
-                // Filters out non-users (e.g. bots)
-                return false;
+        $usersMessages = $messages->filter(function($message) {
+            // Filters out non-users (e.g. bots)
+            return isset($message->user);
+        })
+        ->mapToGroups(function ($message) {
+            return [
+                $message->user => [
+                    'text' => $message->text,
+                    'ts' => $message->ts,
+                ],
+            ];
+        });
+
+        foreach ($usersMessages as $userId => $messages) {
+
+            // Update and cache the user's info from Slack
+            $this->updateUserInfo($userId);
+
+            // Determine status
+            $user = $this->users[$userId];
+
+            $this->statuses[$userId] = $this->getUserStatus($user, $messages);
+        }
+
+        return [
+            'status' => 'success',
+            'meta' => [
+                'user_status_count' => count($this->statuses),
+            ],
+            'data' => [
+                'statuses' => $this->statuses,
+                'messages' => $usersMessages,
+            ],
+        ];
+    }
+
+    public function updateUserInfo($userId)
+    {
+        if ($this->users->has($userId)) {
+            // This is a known user, but see if their info is out of date
+            $user = $this->users->get($userId);
+            $userInfoUpdatedAt = $user->updated_at;
+
+            if (Carbon::parse($userInfoUpdatedAt)->diffInDays() > 30) {
+                // Nothing needs updating
+                return;
+            }
+        }
+
+        // Need to pull and save this user's info from Slack
+        $userInfo = SlackUserClient::info($userId)->user;
+
+        $user = SlackUser::updateOrCreate(
+            [
+                'slack_id' => $userInfo->id,
+            ],
+            [
+                'team_id' => $userInfo->team_id,
+                'display_name' => $userInfo->profile->display_name,
+                'color' => $userInfo->color,
+                'real_name' => $userInfo->real_name,
+                'tz' => $userInfo->tz,
+                'updated' => $userInfo->updated,
+            ]
+        );
+
+        $this->users->put($user->slack_id, $user);
+    }
+
+    public function getUserStatus($user, $messages)
+    {
+        // Work backwards through messages (starting with most recent)
+        // so that any expired @break messages are skipped
+        foreach ($this->prepareMessages($messages) as $message) {
+            $lastMessage = Arr::get($message, 'text');
+            $lastMessageTs = Arr::get($message, 'ts');
+
+            if (self::hasIn($lastMessage)) {
+                $status = 'in';
+            } elseif (self::hasBreak($lastMessage)) {
+                // If it's been less than 20 minutes, they're on break
+                $timeSinceMessage = time() - $lastMessageTs;
+                if ($timeSinceMessage > (20 * 60)) {
+                    // Skip this message, go to the next one
+                    continue;
+                } else {
+                    $status = 'break';
+                }
+            } elseif (self::hasOut($lastMessage)) {
+                $status = 'out';
+            } elseif (self::hasLunch($lastMessage)) {
+                $status = 'lunch';
+            } elseif (self::hasBack($lastMessage)) {
+                $status = 'in';
             }
 
+            // Stop processing earlier messages, since this one set the status for the user
+            return [
+                'slack_id' => $user->slack_id,
+                'display_name' => $user->display_name,
+                'real_name' => $user->real_name,
+                'status' => $status,
+                'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
+                'last_message' => $lastMessage,
+                'team_id' => $user->team_id,
+                'tz' => $user->tz,
+            ];
+        }
+    }
+
+    public function prepareMessages($messages)
+    {
+        return collect($messages)->filter(function ($message) {
             $pattern = self::pregPattern(
                 self::PREG_IN,
                 self::PREG_BREAK,
@@ -72,107 +184,30 @@ class GetStaffIn extends Controller
                 self::PREG_LUNCH,
                 self::PREG_BACK
             );
-            return preg_match($pattern, $message->text);
+
+            return preg_match($pattern, $message['text']);
         })
-            ->mapToGroups(function ($message) {
-                return [
-                    $message->user => [
-                        'text' => $message->text,
-                        'ts' => $message->ts,
-                    ],
-                ];
-            });
-
-            $statuses = [];
-        foreach ($usersMessages as $userId => $messages) {
-            if ($this->userInfoNeedsUpdating($userId)) {
-                // Need to pull and save this user's info from Slack
-                $userInfo = SlackUserClient::info($userId)->user;
-
-                $user = SlackUser::updateOrCreate(
-                    [
-                        'slack_id' => $userInfo->id,
-                    ],
-                    [
-                        'team_id' => $userInfo->team_id,
-                        'display_name' => $userInfo->profile->display_name,
-                        'color' => $userInfo->color,
-                        'real_name' => $userInfo->real_name,
-                        'tz' => $userInfo->tz,
-                        'updated' => $userInfo->updated,
-                    ]
-                );
-
-                $this->users->put($user->slack_id, $user);
-            }
-
-            // Determine status
-            // Work backwards through messages (starting with most recent)
-            // so that any expired @break messages are skipped
-            foreach ($messages as $message) {
-                $lastMessage = Arr::get($message, 'text');
-                $lastMessageTs = Arr::get($message, 'ts');
-
-                if (self::hasIn($lastMessage)) {
-                    $status = 'in';
-                } elseif (self::hasBreak($lastMessage)) {
-                    // If it's been less than 20 minutes, they're on break
-                    $timeSinceMessage = time() - $lastMessageTs;
-                    if ($timeSinceMessage > (20 * 60)) {
-                        // Skip this message, go to the next one
-                        continue;
-                    } else {
-                        $status = 'break';
-                    }
-                } elseif (self::hasOut($lastMessage)) {
-                    $status = 'out';
-                } elseif (self::hasLunch($lastMessage)) {
-                    $status = 'lunch';
-                } elseif (self::hasBack($lastMessage)) {
-                    $status = 'in';
-                }
-
-                $thisUser = $this->users[$userId];
-                $statuses[$thisUser->slack_id] = [
-                    'slack_id' => $thisUser->slack_id,
-                    'display_name' => $thisUser->display_name,
-                    'real_name' => $thisUser->real_name,
-                    'status' => $status,
-                    'since' => Carbon::createFromTimestampUTC($lastMessageTs)->diffForHumans(),
-                    'last_message' => $lastMessage,
-                    'team_id' => $thisUser->team_id,
-                    'tz' => $thisUser->tz,
-                ];
-
-                // Stop processing earlier messages, since this one set the status for the user
-                break;
-            }
-        }
-
-        return [
-            'status' => 'success',
-            'meta' => [
-                'user_status_count' => count($statuses),
-            ],
-            'data' => [
-                'statuses' => $statuses,
-                'messages' => $usersMessages,
-            ],
-        ];
+        ->sortByDesc('ts')
+        ->values();
     }
 
-    public function userInfoNeedsUpdating($userId)
+    /**
+     * Some @status messages might be using a user group
+     * instead of plain text. We want to just use that plain
+     * text version of the message so we need to parse out
+     * some of the advanced syntax.
+     *
+     * More info: https://api.slack.com/reference/surfaces/formatting#advanced
+     */
+    public static function parseSpecialMentionsToText($text)
     {
-        if (! $this->users->has($userId)) {
-            return true;
-        }
+        // Parse out subteam mentions
+        $text = preg_replace(self::PREG_SUBTEAM_MENTION, '$1', $text);
 
-        $user = $this->users->get($userId);
-        $userInfoUpdatedAt = $user->updated_at;
+        // Parse out special mentions
+        $text = preg_replace(self::PREG_SPECIAL_MENTION, '@$1', $text);
 
-        if (Carbon::parse($userInfoUpdatedAt)->diffInDays() > 30) {
-            return true;
-        }
+        return $text;
     }
 
     public static function hasIn($text)
