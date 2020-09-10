@@ -8,34 +8,36 @@
     "packages": [
         {
             "name": "bugsnag/bugsnag",
-            "version": "v3.17.0",
+            "version": "v3.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-php.git",
-                "reference": "2073d449559b0d533f2cfdfb7ceabbeef8187ac0"
+                "reference": "c9350129acc8875e620a971919018240a8bd12b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-php/zipball/2073d449559b0d533f2cfdfb7ceabbeef8187ac0",
-                "reference": "2073d449559b0d533f2cfdfb7ceabbeef8187ac0",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-php/zipball/c9350129acc8875e620a971919018240a8bd12b4",
+                "reference": "c9350129acc8875e620a971919018240a8bd12b4",
                 "shasum": ""
             },
             "require": {
                 "composer/ca-bundle": "^1.0",
-                "guzzlehttp/guzzle": "^5.0|^6.0",
+                "guzzlehttp/guzzle": "^5.0|^6.0|^7.0",
                 "php": ">=5.5"
             },
             "require-dev": {
                 "graham-campbell/testbench-core": "^1.1",
-                "mockery/mockery": "^0.9.4|~1.1.0",
+                "guzzlehttp/psr7": "^1.3",
+                "mockery/mockery": "^0.9.4|^1.3.1",
                 "mtdowling/burgomaster": "dev-master#72151eddf5f0cf101502b94bf5031f9c53501a04",
-                "php-mock/php-mock-phpunit": "^1.1",
-                "phpunit/phpunit": "^4.8|^5.0"
+                "php-mock/php-mock-phpunit": "^1.1|^2.1",
+                "phpunit/phpunit": "^4.8.36|^7.5.15",
+                "sebastian/version": ">=1.0.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.14-dev"
+                    "dev-master": "3.20-dev"
                 }
             },
             "autoload": {
@@ -63,39 +65,39 @@
                 "logging",
                 "tracking"
             ],
-            "time": "2019-05-28T11:00:07+00:00"
+            "time": "2020-08-20T14:44:32+00:00"
         },
         {
             "name": "bugsnag/bugsnag-laravel",
-            "version": "v2.16.0",
+            "version": "v2.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-laravel.git",
-                "reference": "a9922063076eabb0ad8be73fc2999f4105b71d7a"
+                "reference": "66d23a6da7bc62d95efcad11a3a45aff822a4d89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/a9922063076eabb0ad8be73fc2999f4105b71d7a",
-                "reference": "a9922063076eabb0ad8be73fc2999f4105b71d7a",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-laravel/zipball/66d23a6da7bc62d95efcad11a3a45aff822a4d89",
+                "reference": "66d23a6da7bc62d95efcad11a3a45aff822a4d89",
                 "shasum": ""
             },
             "require": {
-                "bugsnag/bugsnag": "^3.17.0",
+                "bugsnag/bugsnag": "^3.20",
                 "bugsnag/bugsnag-psr-logger": "^1.4",
-                "illuminate/contracts": "^5.0",
-                "illuminate/support": "^5.0",
-                "monolog/monolog": "^1.12",
+                "illuminate/contracts": "^5.0|^6.0|^7.0|^8.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0",
+                "monolog/monolog": "^1.12|^2.0",
                 "php": ">=5.5"
             },
             "require-dev": {
                 "graham-campbell/testbench": "^3.1|^4.0|^5.0",
-                "mockery/mockery": "^0.9.4|~1.1.0",
-                "phpunit/phpunit": "^4.8|^5.0|^6.0|^7.0"
+                "mockery/mockery": "^0.9.4|^1.3.1",
+                "phpunit/phpunit": "^4.8.36|^5.6.3|^6.3.1|^7.5.15|^8.3.5"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.15-dev"
+                    "dev-master": "2.18-dev"
                 }
             },
             "autoload": {
@@ -123,20 +125,20 @@
                 "logging",
                 "tracking"
             ],
-            "time": "2019-06-14T15:07:24+00:00"
+            "time": "2020-09-09T14:28:58+00:00"
         },
         {
             "name": "bugsnag/bugsnag-psr-logger",
-            "version": "v1.4.1",
+            "version": "v1.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bugsnag/bugsnag-psr-logger.git",
-                "reference": "a9bed75b830cd1a702c888fdbb1e8b2b46af1ac0"
+                "reference": "222a7338bc5c39833c7c3922a175c539e996797c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bugsnag/bugsnag-psr-logger/zipball/a9bed75b830cd1a702c888fdbb1e8b2b46af1ac0",
-                "reference": "a9bed75b830cd1a702c888fdbb1e8b2b46af1ac0",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-psr-logger/zipball/222a7338bc5c39833c7c3922a175c539e996797c",
+                "reference": "222a7338bc5c39833c7c3922a175c539e996797c",
                 "shasum": ""
             },
             "require": {
@@ -146,13 +148,13 @@
             },
             "require-dev": {
                 "graham-campbell/testbench-core": "^1.1",
-                "mockery/mockery": "^0.9.4",
-                "phpunit/phpunit": "^4.8|^5.0"
+                "mockery/mockery": "^0.9.4|^1.3.1",
+                "phpunit/phpunit": "^4.8.36|^7.5.15"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -181,31 +183,31 @@
                 "psr",
                 "tracking"
             ],
-            "time": "2018-02-16T16:51:45+00:00"
+            "time": "2020-02-26T22:02:20+00:00"
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.1.4",
+            "version": "1.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d"
+                "reference": "8a7ecad675253e4654ea05505233285377405215"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
-                "reference": "558f321c52faeb4828c03e7dc0cfe39a09e09a2d",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/8a7ecad675253e4654ea05505233285377405215",
+                "reference": "8a7ecad675253e4654ea05505233285377405215",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
                 "ext-pcre": "*",
-                "php": "^5.3.2 || ^7.0"
+                "php": "^5.3.2 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 8",
                 "psr/log": "^1.0",
-                "symfony/process": "^2.5 || ^3.0 || ^4.0"
+                "symfony/process": "^2.5 || ^3.0 || ^4.0 || ^5.0"
             },
             "type": "library",
             "extra": {
@@ -237,7 +239,21 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2019-01-28T09:30:10+00:00"
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-08-23T12:54:47+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -843,27 +859,29 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.3.3",
+            "version": "6.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
+                "reference": "aab4ebd862aa7d04f01a4b51849d657db56d882e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
-                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/aab4ebd862aa7d04f01a4b51849d657db56d882e",
+                "reference": "aab4ebd862aa7d04f01a4b51849d657db56d882e",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "guzzlehttp/promises": "^1.0",
-                "guzzlehttp/psr7": "^1.4",
-                "php": ">=5.5"
+                "guzzlehttp/psr7": "^1.6.1",
+                "php": ">=5.5",
+                "symfony/polyfill-intl-idn": "^1.11"
             },
             "require-dev": {
                 "ext-curl": "*",
                 "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
-                "psr/log": "^1.0"
+                "psr/log": "^1.1"
             },
             "suggest": {
                 "psr/log": "Required for using the Log middleware"
@@ -871,16 +889,16 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.3-dev"
+                    "dev-master": "6.5-dev"
                 }
             },
             "autoload": {
-                "files": [
-                    "src/functions_include.php"
-                ],
                 "psr-4": {
                     "GuzzleHttp\\": "src/"
-                }
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -904,7 +922,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-04-22T15:46:56+00:00"
+            "time": "2020-04-18T10:38:46+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -1068,6 +1086,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -1114,6 +1133,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -1625,16 +1645,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.24.0",
+            "version": "1.25.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266"
+                "reference": "1817faadd1846cd08be9a49e905dc68823bc38c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266",
-                "reference": "bfc9ebb28f97e7a24c45bdc3f0ff482e47bb0266",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1817faadd1846cd08be9a49e905dc68823bc38c0",
+                "reference": "1817faadd1846cd08be9a49e905dc68823bc38c0",
                 "shasum": ""
             },
             "require": {
@@ -1648,11 +1668,10 @@
                 "aws/aws-sdk-php": "^2.4.9 || ^3.0",
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
-                "jakub-onderka/php-parallel-lint": "0.9",
                 "php-amqplib/php-amqplib": "~2.4",
                 "php-console/php-console": "^3.1.3",
+                "php-parallel-lint/php-parallel-lint": "^1.0",
                 "phpunit/phpunit": "~4.5",
-                "phpunit/phpunit-mock-objects": "2.3.0",
                 "ruflin/elastica": ">=0.90 <3.0",
                 "sentry/sentry": "^0.13",
                 "swiftmailer/swiftmailer": "^5.3|^6.0"
@@ -1699,7 +1718,17 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2018-11-05T09:00:11+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-07-23T08:35:51+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -2286,16 +2315,16 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.0",
+            "version": "1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd"
+                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
-                "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
+                "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
                 "shasum": ""
             },
             "require": {
@@ -2304,7 +2333,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -2329,7 +2358,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2018-11-20T15:27:04+00:00"
+            "time": "2020-03-23T09:12:05+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -2553,17 +2582,17 @@
             ],
             "authors": [
                 {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                },
+                {
                     "name": "Marijn Huizendveld",
                     "email": "marijn.huizendveld@gmail.com"
                 },
                 {
                     "name": "Thibaud Fabre",
                     "email": "thibaud@aztech.io"
-                },
-                {
-                    "name": "Ben Ramsey",
-                    "email": "ben@benramsey.com",
-                    "homepage": "https://benramsey.com"
                 }
             ],
             "description": "Formerly rhumsaa/uuid. A PHP 5.4+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
@@ -4187,6 +4216,7 @@
                 "psr",
                 "psr-7"
             ],
+            "abandoned": "laminas/laminas-diactoros",
             "time": "2019-04-29T21:11:00+00:00"
         }
     ],
@@ -4197,12 +4227,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/adamwathan/laravel-preset.git",
-                "reference": "5848456a4eed24b0ff0f2205c60f248ed6ccb4ae"
+                "reference": "dbd5d137d6a513ad7b9d04e1683f2d9b6fe73086"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/adamwathan/laravel-preset/zipball/5848456a4eed24b0ff0f2205c60f248ed6ccb4ae",
-                "reference": "5848456a4eed24b0ff0f2205c60f248ed6ccb4ae",
+                "url": "https://api.github.com/repos/adamwathan/laravel-preset/zipball/dbd5d137d6a513ad7b9d04e1683f2d9b6fe73086",
+                "reference": "dbd5d137d6a513ad7b9d04e1683f2d9b6fe73086",
                 "shasum": ""
             },
             "require": {
@@ -4233,7 +4263,8 @@
                 "source": "https://github.com/adamwathan/laravel-preset/tree/master",
                 "issues": "https://github.com/adamwathan/laravel-preset/issues"
             },
-            "time": "2018-09-10T15:02:59+00:00"
+            "abandoned": true,
+            "time": "2019-09-18T12:52:32+00:00"
         },
         {
             "name": "beyondcode/laravel-dump-server",
@@ -5255,6 +5286,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2018-10-30T05:52:18+00:00"
         },
         {
@@ -6009,5 +6041,6 @@
     "platform": {
         "php": "^7.1.3"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
