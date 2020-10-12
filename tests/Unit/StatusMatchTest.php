@@ -78,6 +78,7 @@ class StatusMatchTest extends TestCase
             '@lunching',
             '@snack',
             '@snacking',
+            '@lunchito',
         ];
 
         $false = [
@@ -127,6 +128,9 @@ class StatusMatchTest extends TestCase
             '@vote',
             '@voting',
             '@ofn',
+            '@therapy',
+            '@errand',
+            '@errands',
         ];
 
         $false = [

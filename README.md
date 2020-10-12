@@ -1,5 +1,7 @@
 ### Tighten Slack Helpers
 
+Note: this is an internal project. Don't try to set it up on your own. If you're interested in using it on your workspace, reach out to me on Twitter [@jakebathman](https://twitter.com/jakebathman) and I'd be happy to help you out.
+
 ## IsInBot
 
 This bot provides three services: 
@@ -18,5 +20,3 @@ The API endpoints use an implicit token
 The slash commands are tied to the bot **IsInBot**, which can be installed to the workspace:
 
 <a href="https://slack.com/oauth/authorize?scope=commands,bot&client_id=423337616818.437363470321"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
-
-

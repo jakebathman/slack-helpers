@@ -90,7 +90,7 @@ class GetStaffInTest extends TestCase
         ];
 
         foreach ($strings as $input => $output) {
-            $this->assertEquals($output, GetStaffIn::parseSpecialMentionsToText($input));
+            $this->assertEquals($output, (new GetStaffIn)->parseSpecialMentionsToText($input));
         }
     }
 }

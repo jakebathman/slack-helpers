@@ -14,9 +14,9 @@ class GetStaffIn extends Controller
 {
     const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
     const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^:tea:(\s*?:timer_clock:)?$)';
-    const PREG_LUNCH = '([@!\+](lunch|brunch|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
+    const PREG_LUNCH = '([@!\+](lunch(ito)?|brunch|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
-    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting)([^\w]|$)|^out$)';
+    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?)([^\w]|$)|^out$)';
     const PREG_SUBTEAM_MENTION = '/\<\!subteam\^(?:[A-Z0-9]+)(?:\|(.*?))?\>/i';
     const PREG_SPECIAL_MENTION = '/\<\!(here|channel|everyone)\>/i';
 
@@ -85,7 +85,11 @@ class GetStaffIn extends Controller
             // Determine status
             $user = $this->users[$userId];
 
-            $this->statuses[$userId] = $this->getUserStatus($user, $messages);
+            $statusInfo = $this->getUserStatus($user, $messages);
+
+            if($statusInfo){
+                $this->statuses[$userId] = $statusInfo;
+            }
         }
 
         return [
@@ -199,7 +203,7 @@ class GetStaffIn extends Controller
      *
      * More info: https://api.slack.com/reference/surfaces/formatting#advanced
      */
-    public static function parseSpecialMentionsToText($text)
+    public function parseSpecialMentionsToText($text)
     {
         // Parse out subteam mentions
         $text = preg_replace(self::PREG_SUBTEAM_MENTION, '$1', $text);
