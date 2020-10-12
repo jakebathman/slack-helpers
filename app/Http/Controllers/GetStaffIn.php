@@ -26,6 +26,43 @@ class GetStaffIn extends Controller
     protected $client;
     protected $teamId;
 
+    public static function hasIn($text)
+    {
+        return preg_match(self::pregPattern(self::PREG_IN), $text);
+    }
+
+    public static function hasBreak($text)
+    {
+        return preg_match(self::pregPattern(self::PREG_BREAK), $text);
+    }
+
+    public static function hasLunch($text)
+    {
+        return preg_match(self::pregPattern(self::PREG_LUNCH), $text);
+    }
+
+    public static function hasBack($text)
+    {
+        return preg_match(self::pregPattern(self::PREG_BACK), $text);
+    }
+
+    public static function hasOut($text)
+    {
+        return preg_match(self::pregPattern(self::PREG_OUT), $text);
+    }
+
+    public static function pregPattern(...$patterns)
+    {
+        return '/(' . implode('|', $patterns) . ')/i';
+    }
+
+    public function __invoke(Request $request, $teamId = null)
+    {
+        $this->prepare($teamId);
+
+        return $this->getStatuses();
+    }
+
     public function prepare($teamId = null)
     {
         $this->teamId = $teamId ?? config('services.slack.team_id');
@@ -34,13 +71,6 @@ class GetStaffIn extends Controller
         $this->users = $this->client->getUsers();
 
         return $this;
-    }
-
-    public function __invoke(Request $request, $teamId = null)
-    {
-        $this->prepare($teamId);
-
-        return $this->getStatuses();
     }
 
     public function getStatuses()
@@ -212,35 +242,5 @@ class GetStaffIn extends Controller
         $text = preg_replace(self::PREG_SPECIAL_MENTION, '@$1', $text);
 
         return $text;
-    }
-
-    public static function hasIn($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_IN), $text);
-    }
-
-    public static function hasBreak($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_BREAK), $text);
-    }
-
-    public static function hasLunch($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_LUNCH), $text);
-    }
-
-    public static function hasBack($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_BACK), $text);
-    }
-
-    public static function hasOut($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_OUT), $text);
-    }
-
-    public static function pregPattern(...$patterns)
-    {
-        return '/(' . implode('|', $patterns) . ')/i';
     }
 }
