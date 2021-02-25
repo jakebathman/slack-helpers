@@ -18,6 +18,7 @@ class SlashIsInTest extends TestCase
     {
         factory(Token::class)->create([
             'team_id' => 'T0250LTFC',
+            'general_channel_id' => 'ABCD1234',
         ]);
 
         Http::fake([
@@ -48,6 +49,7 @@ class SlashIsInTest extends TestCase
     {
         factory(Token::class)->create([
             'team_id' => 'T0250LTFC',
+            'general_channel_id' => 'ABCD1234',
         ]);
 
         Http::fake([
@@ -58,6 +60,11 @@ class SlashIsInTest extends TestCase
                     'is_restricted' => false,
                     'is_ultra_restricted' => false,
                 ],
+            ]),
+
+            'slack.com/api/conversations.history' => Http::response([
+                'ok' => true,
+                'messages' => [],
             ]),
         ]);
 

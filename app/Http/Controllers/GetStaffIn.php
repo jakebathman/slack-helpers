@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\SlackApiException;
 use App\SlackClient;
 use App\SlackUser;
+use App\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -66,7 +67,10 @@ class GetStaffIn extends Controller
     public function prepare($teamId = null)
     {
         $this->teamId = $teamId ?? config('services.slack.team_id');
-        $this->channelId = config('services.slack.general_channel_id');
+        $workspace = Token::where('team_id', $this->teamId)->first();
+
+        $this->channelId = $workspace->getGeneralChannelId();
+
         $this->client = new SlackClient($this->teamId);
         $this->users = $this->client->getUsers();
 
@@ -92,23 +96,21 @@ class GetStaffIn extends Controller
             ];
         }
 
-
         // Group messages by user and filter only @in/@brb/@out/@lunch/@back
-        $usersMessages = $messages->filter(function($message) {
+        $usersMessages = $messages->filter(function ($message) {
             // Filters out non-users (e.g. bots)
-            return isset($message->user);
+            return isset($message['user']);
         })
         ->mapToGroups(function ($message) {
             return [
-                $message->user => [
-                    'text' => $message->text,
-                    'ts' => $message->ts,
+                $message['user'] => [
+                    'text' => $message['text'],
+                    'ts' => $message['ts'],
                 ],
             ];
         });
 
         foreach ($usersMessages as $userId => $messages) {
-
             // Update and cache the user's info from Slack
             $this->updateUserInfo($userId);
 
@@ -117,7 +119,7 @@ class GetStaffIn extends Controller
 
             $statusInfo = $this->getUserStatus($user, $messages);
 
-            if($statusInfo){
+            if ($statusInfo) {
                 $this->statuses[$userId] = $statusInfo;
             }
         }
@@ -148,19 +150,22 @@ class GetStaffIn extends Controller
         }
 
         // Need to pull and save this user's info from Slack
-        $userInfo = SlackUserClient::info($userId)->user;
+        // $userInfo = SlackUserClient::info($userId)->user;
+        $userInfo = $this->client->getUserInfo($userId);
+
+        $displayName = empty($userInfo['profile']['display_name']) ? $userInfo['name'] : $userInfo['profile']['display_name'];
 
         $user = SlackUser::updateOrCreate(
             [
-                'slack_id' => $userInfo->id,
+                'slack_id' => $userInfo['id'],
             ],
             [
-                'team_id' => $userInfo->team_id,
-                'display_name' => $userInfo->profile->display_name,
-                'color' => $userInfo->color,
-                'real_name' => $userInfo->real_name,
-                'tz' => $userInfo->tz,
-                'updated' => $userInfo->updated,
+                'team_id' => $userInfo['team_id'],
+                'display_name' => $displayName,
+                'color' => $userInfo['color'],
+                'real_name' => $userInfo['real_name'],
+                'tz' => $userInfo['tz'],
+                'updated' => $userInfo['updated'],
             ]
         );
 

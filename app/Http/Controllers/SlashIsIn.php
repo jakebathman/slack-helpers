@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\SlackClient;
 use App\SlackMessage;
+use App\Token;
 use Illuminate\Support\Arr;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
@@ -33,8 +34,10 @@ class SlashIsIn extends Controller
 
     public function __invoke($teamId = null)
     {
-        $this->channelId = config('services.slack.general_channel_id');
-        $this->teamId = $teamId ?? config('services.slack.team_id');
+        $this->teamId = $teamId ?? request('team_id');
+        $workspace = Token::where('team_id', $this->teamId)->first();
+
+        $this->channelId = $workspace->getGeneralChannelId();
         $this->client = new SlackClient($this->teamId);
         $userId = request('user_id');
 

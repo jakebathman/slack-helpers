@@ -20,7 +20,7 @@ class OAuthController extends Controller
         $code = request('code', null);
 
         // Request a token using this code
-        $response = $this->client->post('https://slack.com/api/oauth.access', [
+        $response = $this->client->post('https://slack.com/api/oauth.v2.access', [
             'form_params' => [
                 'client_id' => config('services.slack.client_id'),
                 'client_secret' => config('services.slack.client_secret'),
@@ -36,12 +36,12 @@ class OAuthController extends Controller
         }
 
         Token::updateOrCreate(
-            [ 'team_id' => Arr::get($data, 'team_id') ],
+            [ 'team_id' => Arr::get($data, 'team.id') ],
             [
                 'access_token' => Arr::get($data, 'access_token'),
                 'scope' => Arr::get($data, 'scope'),
-                'user_id' => Arr::get($data, 'user_id'),
-                'team_name' => Arr::get($data, 'team_name'),
+                'user_id' => Arr::get($data, 'authed_user.id'),
+                'team_name' => Arr::get($data, 'team.name'),
                 'incoming_webhook_url' => Arr::get($data, 'incoming_webhook.url'),
                 'incoming_webhook_channel' => Arr::get($data, 'incoming_webhook.channel'),
                 'incoming_webhook_channel_id' => Arr::get($data, 'incoming_webhook.channel_id'),

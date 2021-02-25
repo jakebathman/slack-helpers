@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Exceptions\SlackApiException;
+use App\Slack\SlackClient as SlackApiClient;
 use App\SlackUser;
 use Exception;
 use Illuminate\Support\Arr;
@@ -14,6 +15,7 @@ class SlackClient
 {
     const BASE = 'https://slack.com/api/';
 
+    protected $client;
     protected $teamId;
 
     private $token;
@@ -29,6 +31,9 @@ class SlackClient
         // set the token to the config for the SlackApi package to use
         $this->token = $token->access_token;
         config(['services.slack.token' => $token->access_token]);
+
+        // Instantiate an API client
+        $this->client = new SlackApiClient($this->token);
     }
 
     public function getUsers()
@@ -46,7 +51,8 @@ class SlackClient
     {
         $endpoint = static::BASE . 'users.info';
 
-        $response = Http::withHeaders([
+        $response = Http::asForm()
+        ->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
         ])
         ->post($endpoint, [
@@ -69,22 +75,20 @@ class SlackClient
                 $earliestTs = $latest;
             }
 
-            $data = SlackChannel::history(
-                $channelId,
-                200,
-                $latest
-            );
+            $data = $this->client->conversationsHistory($channelId, [
+                'latest' => $latest,
+                'limit' => 200,
+            ]);
 
-
-            if ($data->ok == false) {
+            if ($data['ok'] == false) {
                 throw new SlackApiException('Slack API returned an error while fetching the channel history. Error ID ' . $data->error . '. More info at https://api.slack.com/methods/channels.history');
             }
 
-            $messages = collect($data->messages)
+            $messages = collect($data['messages'])
                 ->filter(
                     function ($message) use ($earliestTime) {
                         // Keeps messages after $earliestTime
-                        return (int)$message->ts >= $earliestTime;
+                        return (int)$message['ts'] >= $earliestTime;
                     }
                 );
 
@@ -92,9 +96,9 @@ class SlackClient
                 return collect();
             }
 
-            $lastMessageTs = $messages->last()->ts;
+            $lastMessageTs = $messages->last()['ts'];
             $allMessages = $allMessages->merge($messages);
-            if ((int)$lastMessageTs > $earliestTime && count($data->messages) == $messages->count()) {
+            if ((int)$lastMessageTs > $earliestTime && count($data['messages']) == $messages->count()) {
                 // API needs to be called again for another batch
                 $latest = $lastMessageTs;
                 // dump("calling again for before $latest");
