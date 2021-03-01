@@ -67,6 +67,14 @@ class BlockKitMessage
         return $this;
     }
 
+    // Add a raw block array
+    public function block($block)
+    {
+        $this->blocks[] = $block;
+
+        return $this;
+    }
+
     public function __toString()
     {
         return json_encode(['blocks'=>$this->blocks]);

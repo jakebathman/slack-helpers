@@ -126,7 +126,14 @@ class SlashIsIn extends Controller
     {
         return response()->json(
             $this->replyMessage
-                ->section($text)
+                ->block([
+                    'type' => 'section',
+                    'text' => [
+                        'type' => 'mrkdwn',
+                        'text' => $text,
+                        'verbatim' => true,
+                    ]
+                ])
                 ->actions([
                     [
                         'type' => 'button',
