@@ -24,6 +24,7 @@ return [
         'client_id' => env('SLACK_APP_CLIENT_ID'),
         'client_secret' => env('SLACK_APP_CLIENT_SECRET'),
         'team_id' => env('SLACK_TEAM_ID'),
+        'signing_secret' => env('SLACK_APP_SIGNING_SECRET'),
     ],
 
     'stripe' => [
