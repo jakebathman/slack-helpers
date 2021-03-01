@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Slack\BlockKitMessage;
 use App\SlackClient;
-use App\SlackMessage;
 use App\Token;
 use Illuminate\Support\Arr;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
@@ -49,7 +49,7 @@ class SlashIsIn extends Controller
         }
 
         $this->users = $this->client->getUsers();
-        $this->replyMessage = new SlackMessage;
+        $this->replyMessage = new BlockKitMessage;
 
         $message = request('text');
 
@@ -69,8 +69,7 @@ class SlashIsIn extends Controller
 
         if (Arr::get($statusData, 'status') != 'success') {
             return $this->reply(
-                "Sorry, something went wrong trying to look that up. Here's the error message:\n> "
-                    . Arr::get($statusData, 'message', '(No error message)')
+                "Sorry, something went wrong trying to look that up. Here's the error message:\n> " . Arr::get($statusData, 'message', '(No error message)')
             );
         }
 
@@ -125,15 +124,19 @@ class SlashIsIn extends Controller
 
     protected function reply($text)
     {
-        return response(
+        return response()->json(
             $this->replyMessage
-                ->text($text)
-                ->toString()
-        )
-            ->withHeaders(
-                [
-                    'Content-Type' => 'application/json',
-                ]
-            );
+                ->section($text)
+                ->actions([
+                    [
+                    'type' => 'button',
+                    'text' => [
+                        'type' => 'plain_text',
+                        'text' => 'Close results',
+                    ],
+                    'action_id' => 'close_search_results',
+                    ],
+            ])
+        );
     }
 }
