@@ -129,12 +129,12 @@ class SlashIsIn extends Controller
                 ->section($text)
                 ->actions([
                     [
-                    'type' => 'button',
-                    'text' => [
-                        'type' => 'plain_text',
-                        'text' => 'Close results',
-                    ],
-                    'action_id' => 'close_search_results',
+                        'type' => 'button',
+                        'text' => [
+                            'type' => 'plain_text',
+                            'text' => 'Close',
+                        ],
+                        'action_id' => 'close_results',
                     ],
             ])
         );

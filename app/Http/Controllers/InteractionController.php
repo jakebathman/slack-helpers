@@ -47,7 +47,7 @@ class InteractionController extends Controller
         $responseUrl = Arr::get($data, 'response_url');
 
         switch (Arr::get($data, 'actions.0.action_id')) {
-            case 'close_search_results':
+            case 'close_results':
                 return HandleInteraction::deleteOriginal($responseUrl);
                 break;
 
