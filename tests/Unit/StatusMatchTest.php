@@ -51,6 +51,7 @@ class StatusMatchTest extends TestCase
             ':latte:',
             ':tea:',
             ':tea: :timer_clock:',
+            ':tea_cat: :timer_clock:',
         ];
 
         $false = [
