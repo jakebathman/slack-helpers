@@ -80,6 +80,7 @@ class StatusMatchTest extends TestCase
             '@snack',
             '@snacking',
             '@lunchito',
+            '@dinner',
         ];
 
         $false = [

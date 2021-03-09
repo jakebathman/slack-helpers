@@ -15,7 +15,7 @@ class GetStaffIn extends Controller
 {
     const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
     const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^(:tea:|:tea_cat:)(\s*?:timer_clock:)?$)';
-    const PREG_LUNCH = '([@!\+](lunch(ito)?|brunch|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
+    const PREG_LUNCH = '([@!\+](lunch(ito)?|brunch|dinner|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
     const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?)([^\w]|$)|^out$)';
     const PREG_SUBTEAM_MENTION = '/\<\!subteam\^(?:[A-Z0-9]+)(?:\|(.*?))?\>/i';
