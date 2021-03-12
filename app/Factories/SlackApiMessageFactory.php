@@ -10,6 +10,7 @@ class SlackApiMessageFactory extends SlackFactory
     public $asArray = false;
     public $teamId;
     public $times;
+    public $unix;
     public $userId;
 
     public function __construct()
@@ -31,6 +32,13 @@ class SlackApiMessageFactory extends SlackFactory
     public function withText($text)
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function withTimestamp($unix)
+    {
+        $this->unix = $unix;
 
         return $this;
     }
@@ -68,7 +76,7 @@ class SlackApiMessageFactory extends SlackFactory
             'type' => 'message',
             'text' => $this->text ?? $this->faker->sentence,
             'user' => $this->userId,
-            'ts' => $this->makeTs(),
+            'ts' => $this->makeTs($this->unix),
             'team' => $this->teamId,
             'blocks' => [],
         ]);

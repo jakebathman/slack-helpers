@@ -9,15 +9,14 @@ use App\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class GetStaffIn extends Controller
 {
     const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
-    const PREG_BREAK = '([@!\+](brb|break|relo)([^\w]|$)|^brb$|^:(coffee|latte):$|^(:tea:|:tea_cat:)(\s*?:timer_clock:)?$)';
+    const PREG_BREAK = '([@!\+](brb|break|relo|walk)([^\w]|$)|^brb$|^:(coffee|latte):$|^(:tea:|:tea_cat:)(\s*?:timer_clock:)?$)';
     const PREG_LUNCH = '([@!\+](lunch(ito)?|brunch|dinner|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
-    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?)([^\w]|$)|^out$)';
+    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?|nap)([^\w]|$)|^out$)';
     const PREG_SUBTEAM_MENTION = '/\<\!subteam\^(?:[A-Z0-9]+)(?:\|(.*?))?\>/i';
     const PREG_SPECIAL_MENTION = '/\<\!(here|channel|everyone)\>/i';
 
@@ -150,7 +149,6 @@ class GetStaffIn extends Controller
         }
 
         // Need to pull and save this user's info from Slack
-        // $userInfo = SlackUserClient::info($userId)->user;
         $userInfo = $this->client->getUserInfo($userId);
 
         $displayName = empty($userInfo['profile']['display_name']) ? $userInfo['name'] : $userInfo['profile']['display_name'];
@@ -183,9 +181,16 @@ class GetStaffIn extends Controller
             if (self::hasIn($lastMessage)) {
                 $status = 'in';
             } elseif (self::hasBreak($lastMessage)) {
-                // If it's been less than 20 minutes, they're on break
+                // If it's been less than XX minutes, they're on break
                 $timeSinceMessage = time() - $lastMessageTs;
-                if ($timeSinceMessage > (20 * 60)) {
+
+                // Most breaks are 20 min, except walks which are 30
+                $breakDuration = 20;
+                if (preg_match('/[@!\+](walk)/i', $lastMessage)) {
+                    $breakDuration = 30;
+                }
+
+                if ($timeSinceMessage > ($breakDuration * 60)) {
                     // Skip this message, go to the next one
                     continue;
                 } else {

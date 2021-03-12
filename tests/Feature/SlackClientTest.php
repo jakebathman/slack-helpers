@@ -4,9 +4,7 @@ namespace Tests\Feature;
 
 use App\Exceptions\SlackApiError;
 use App\Slack\SlackClient;
-use Illuminate\Http\Client\RequestException;
 use Tests\TestCase;
-use Throwable;
 
 class SlackClientTest extends TestCase
 {

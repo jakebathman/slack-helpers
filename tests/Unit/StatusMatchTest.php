@@ -52,6 +52,7 @@ class StatusMatchTest extends TestCase
             ':tea:',
             ':tea: :timer_clock:',
             ':tea_cat: :timer_clock:',
+            '@walk',
         ];
 
         $false = [
@@ -133,6 +134,7 @@ class StatusMatchTest extends TestCase
             '@therapy',
             '@errand',
             '@errands',
+            '@nap',
         ];
 
         $false = [
