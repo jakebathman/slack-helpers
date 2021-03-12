@@ -28,9 +28,13 @@ class SlackFactory
         return $this->faker->regexify(ucfirst(substr($type, 0, 1)) . '[A-Z0-9]{7,10}');
     }
 
-    public function makeTs()
+    // Return format is decimal unix time with 6 digits after decimal
+    // e.g., 1234567890.987654
+    public function makeTs($sec = null, $usec = null)
     {
-        list($usec, $sec) = explode(' ', microtime());
+        if (! $sec) {
+            list($usec, $sec) = explode(' ', microtime());
+        }
 
         return $sec . '.' . str_pad(substr($usec, 2, 6), 6, 0);
     }
