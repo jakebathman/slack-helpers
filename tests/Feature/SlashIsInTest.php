@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Factories\SlackApiUserFactory;
 use App\Http\Controllers\SlashIsIn;
 use App\Token;
+use App\UserChecker;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -88,10 +89,10 @@ class SlashIsInTest extends TestCase
             ->isUltraRestricted()
             ->create();
 
-        $this->assertTrue(SlashIsIn::isSingleChannelGuest($user));
+        $this->assertTrue(UserChecker::isSingleChannelGuest($user));
 
-        $this->assertFalse(SlashIsIn::isMultiChannelGuest($user));
-        $this->assertFalse(SlashIsIn::isNormalUser($user));
+        $this->assertFalse(UserChecker::isMultiChannelGuest($user));
+        $this->assertFalse(UserChecker::isNormalUser($user));
     }
 
     /** @test */
@@ -101,10 +102,10 @@ class SlashIsInTest extends TestCase
             ->isRestricted()
             ->create();
 
-        $this->assertTrue(SlashIsIn::isMultiChannelGuest($user));
+        $this->assertTrue(UserChecker::isMultiChannelGuest($user));
 
-        $this->assertFalse(SlashIsIn::isSingleChannelGuest($user));
-        $this->assertFalse(SlashIsIn::isNormalUser($user));
+        $this->assertFalse(UserChecker::isSingleChannelGuest($user));
+        $this->assertFalse(UserChecker::isNormalUser($user));
     }
 
     /** @test */
@@ -113,9 +114,9 @@ class SlashIsInTest extends TestCase
         $user = app(SlackApiUserFactory::class)
             ->create();
 
-        $this->assertTrue(SlashIsIn::isNormalUser($user));
+        $this->assertTrue(UserChecker::isNormalUser($user));
 
-        $this->assertFalse(SlashIsIn::isSingleChannelGuest($user));
-        $this->assertFalse(SlashIsIn::isMultiChannelGuest($user));
+        $this->assertFalse(UserChecker::isSingleChannelGuest($user));
+        $this->assertFalse(UserChecker::isMultiChannelGuest($user));
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\SlackApiException;
 use App\SlackClient;
 use App\SlackUser;
+use App\StatusMatcher;
 use App\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -12,49 +13,11 @@ use Illuminate\Support\Carbon;
 
 class GetStaffIn extends Controller
 {
-    const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
-    const PREG_BREAK = '([@!\+](brb|break|relo|walk)([^\w]|$)|^brb$|^:(coffee|latte):$|^(:tea:|:tea_cat:)(\s*?:timer_clock:)?$)';
-    const PREG_LUNCH = '([@!\+](lunch(ito)?|brunch|dinner|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
-    const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
-    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?|nap)([^\w]|$)|^out$)';
-    const PREG_SUBTEAM_MENTION = '/\<\!subteam\^(?:[A-Z0-9]+)(?:\|(.*?))?\>/i';
-    const PREG_SPECIAL_MENTION = '/\<\!(here|channel|everyone)\>/i';
-
     public $statuses = [];
 
     protected $channelId;
     protected $client;
     protected $teamId;
-
-    public static function hasIn($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_IN), $text);
-    }
-
-    public static function hasBreak($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_BREAK), $text);
-    }
-
-    public static function hasLunch($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_LUNCH), $text);
-    }
-
-    public static function hasBack($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_BACK), $text);
-    }
-
-    public static function hasOut($text)
-    {
-        return preg_match(self::pregPattern(self::PREG_OUT), $text);
-    }
-
-    public static function pregPattern(...$patterns)
-    {
-        return '/(' . implode('|', $patterns) . ')/i';
-    }
 
     public function __invoke(Request $request, $teamId = null)
     {
@@ -178,9 +141,9 @@ class GetStaffIn extends Controller
             $lastMessage = Arr::get($message, 'text');
             $lastMessageTs = Arr::get($message, 'ts');
 
-            if (self::hasIn($lastMessage)) {
+            if (StatusMatcher::hasIn($lastMessage)) {
                 $status = 'in';
-            } elseif (self::hasBreak($lastMessage)) {
+            } elseif (StatusMatcher::hasBreak($lastMessage)) {
                 // If it's been less than XX minutes, they're on break
                 $timeSinceMessage = time() - $lastMessageTs;
 
@@ -196,11 +159,11 @@ class GetStaffIn extends Controller
                 } else {
                     $status = 'break';
                 }
-            } elseif (self::hasOut($lastMessage)) {
+            } elseif (StatusMatcher::hasOut($lastMessage)) {
                 $status = 'out';
-            } elseif (self::hasLunch($lastMessage)) {
+            } elseif (StatusMatcher::hasLunch($lastMessage)) {
                 $status = 'lunch';
-            } elseif (self::hasBack($lastMessage)) {
+            } elseif (StatusMatcher::hasBack($lastMessage)) {
                 $status = 'in';
             }
 
@@ -221,13 +184,7 @@ class GetStaffIn extends Controller
     public function prepareMessages($messages)
     {
         return collect($messages)->filter(function ($message) {
-            $pattern = self::pregPattern(
-                self::PREG_IN,
-                self::PREG_BREAK,
-                self::PREG_OUT,
-                self::PREG_LUNCH,
-                self::PREG_BACK
-            );
+            $pattern = StatusMatcher::mergedPattern();
 
             return preg_match($pattern, $message['text']);
         })
@@ -246,10 +203,10 @@ class GetStaffIn extends Controller
     public function parseSpecialMentionsToText($text)
     {
         // Parse out subteam mentions
-        $text = preg_replace(self::PREG_SUBTEAM_MENTION, '$1', $text);
+        $text = preg_replace(StatusMatcher::PREG_SUBTEAM_MENTION, '$1', $text);
 
         // Parse out special mentions
-        $text = preg_replace(self::PREG_SPECIAL_MENTION, '@$1', $text);
+        $text = preg_replace(StatusMatcher::PREG_SPECIAL_MENTION, '@$1', $text);
 
         return $text;
     }

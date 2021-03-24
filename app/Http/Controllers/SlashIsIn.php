@@ -5,32 +5,13 @@ namespace App\Http\Controllers;
 use App\Slack\BlockKitMessage;
 use App\SlackClient;
 use App\Token;
+use App\UserChecker;
 use Illuminate\Support\Arr;
 use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class SlashIsIn extends Controller
 {
     protected $replyMessage;
-
-    public static function callingUserAllowed($user)
-    {
-        return static::isNormalUser($user);
-    }
-
-    public static function isSingleChannelGuest($user)
-    {
-        return Arr::get($user, 'is_ultra_restricted', false) && Arr::get($user, 'is_restricted', false);
-    }
-
-    public static function isMultiChannelGuest($user)
-    {
-        return Arr::get($user, 'is_restricted', false) && ! Arr::get($user, 'is_ultra_restricted', false);
-    }
-
-    public static function isNormalUser($user)
-    {
-        return ! static::isSingleChannelGuest($user) && ! static::isMultiChannelGuest($user);
-    }
 
     public function __invoke($teamId = null)
     {
@@ -44,11 +25,10 @@ class SlashIsIn extends Controller
         // Check if this user is allowed
         $userInfo = $this->client->getUserInfo($userId);
 
-        if (! self::callingUserAllowed($userInfo)) {
+        if (! UserChecker::callingUserAllowed($userInfo)) {
             return 'Sorry, this command is not available to Single Channel Guests.';
         }
 
-        $this->users = $this->client->getUsers();
         $this->replyMessage = new BlockKitMessage;
 
         $message = request('text');

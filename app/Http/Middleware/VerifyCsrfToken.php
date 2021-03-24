@@ -10,6 +10,6 @@ class VerifyCsrfToken extends Middleware
 
     protected $except = [
         'in',
-        'slash/isin',
+        'slash/*',
     ];
 }

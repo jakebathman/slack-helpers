@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Factories\SlackApiUserFactory;
-use App\Http\Controllers\SlashIsIn;
 use App\Token;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Http;

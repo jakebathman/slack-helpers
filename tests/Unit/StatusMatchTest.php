@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Http\Controllers\GetStaffIn;
+use App\StatusMatcher;
 use Tests\TestCase;
 
 class StatusMatchTest extends TestCase
@@ -82,6 +83,7 @@ class StatusMatchTest extends TestCase
             '@snacking',
             '@lunchito',
             '@dinner',
+            '@breakfast',
         ];
 
         $false = [
@@ -150,12 +152,12 @@ class StatusMatchTest extends TestCase
     {
         // Test for affirmative matches
         foreach ($true as $test) {
-            $this->assertEquals(1, GetStaffIn::$method($test), "Failed positive match: '{$test}'");
+            $this->assertEquals(1, StatusMatcher::$method($test), "Failed positive match: '{$test}'");
         }
 
         // Test for negative matches
         foreach ($false as $test) {
-            $this->assertEquals(0, GetStaffIn::$method($test), "Failed negative match: '{$test}'");
+            $this->assertEquals(0, StatusMatcher::$method($test), "Failed negative match: '{$test}'");
         }
     }
 }
