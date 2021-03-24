@@ -9,7 +9,6 @@ use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
-use Wgmv\SlackApi\Facades\SlackChannel;
 
 class SlackClient
 {

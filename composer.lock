@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be0a0ec4a223b70a58b1ed084a5a34aa",
+    "content-hash": "0dc4cbf1117efc2501807bc4db5af4ad",
     "packages": [
         {
             "name": "brick/math",
@@ -1531,93 +1531,6 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.7.0"
             },
             "time": "2020-09-30T07:37:11+00:00"
-        },
-        {
-            "name": "jakebathman/laravel-slack-api",
-            "version": "v0.6.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jakebathman/laravel-slack-api.git",
-                "reference": "5d74fab794c7dffef64335f5bc2ed6ac489edaf6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jakebathman/laravel-slack-api/zipball/5d74fab794c7dffef64335f5bc2ed6ac489edaf6",
-                "reference": "5d74fab794c7dffef64335f5bc2ed6ac489edaf6",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": ">=5.3",
-                "illuminate/cache": ">=5.0",
-                "illuminate/support": ">=5.0",
-                "php": ">=7.2"
-            },
-            "require-dev": {
-                "mockery/mockery": ">=1.0",
-                "phpunit/phpunit": ">=8.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Wgmv\\SlackApi\\SlackApiServiceProvider"
-                    ],
-                    "aliases": {
-                        "SlackApi": "Wgmv\\SlackApi\\Facades\\SlackApi",
-                        "SlackChannel": "Wgmv\\SlackApi\\Facades\\SlackChannel",
-                        "SlackChat": "Wgmv\\SlackApi\\Facades\\SlackChat",
-                        "SlackConversation": "Wgmv\\SlackApi\\Facades\\SlackConversation",
-                        "SlackGroup": "Wgmv\\SlackApi\\Facades\\SlackGroup",
-                        "SlackFile": "Wgmv\\SlackApi\\Facades\\SlackFile",
-                        "SlackSearch": "Wgmv\\SlackApi\\Facades\\SlackSearch",
-                        "SlackInstantMessage": "Wgmv\\SlackApi\\Facades\\SlackInstantMessage",
-                        "SlackUser": "Wgmv\\SlackApi\\Facades\\SlackUser",
-                        "SlackStar": "Wgmv\\SlackApi\\Facades\\SlackStar",
-                        "SlackUserAdmin": "Wgmv\\SlackApi\\Facades\\SlackUserAdmin",
-                        "SlackRealTimeMessage": "Wgmv\\SlackApi\\Facades\\SlackRealTimeMessage",
-                        "SlackTeam": "Wgmv\\SlackApi\\Facades\\SlackTeam"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Wgmv\\SlackApi\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Vagner do Carmo",
-                    "email": "vluzrmos@gmail.com",
-                    "role": "Original author"
-                },
-                {
-                    "name": "Walter Vogel",
-                    "email": "walter@wgmv.de",
-                    "role": "Contributor"
-                },
-                {
-                    "name": "Jake Bathman",
-                    "email": "jake.bathman@gmail.com",
-                    "role": "Contributor"
-                }
-            ],
-            "description": "Wrapper for Slack.com WEB API. Based on code from Vagner do Carmo.",
-            "keywords": [
-                "laravel",
-                "lumen",
-                "slack"
-            ],
-            "support": {
-                "source": "https://github.com/jakebathman/laravel-slack-api/tree/v0.6.6"
-            },
-            "time": "2020-06-13T03:29:02+00:00"
         },
         {
             "name": "laravel/framework",

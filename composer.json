@@ -13,7 +13,6 @@
         "doctrine/dbal": "~2.3",
         "facade/ignition": "^2.0",
         "fideloper/proxy": "^4.0",
-        "jakebathman/laravel-slack-api": "^0.6",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0"
     },
