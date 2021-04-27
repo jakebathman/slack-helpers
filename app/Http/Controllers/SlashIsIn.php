@@ -7,7 +7,6 @@ use App\SlackClient;
 use App\Token;
 use App\UserChecker;
 use Illuminate\Support\Arr;
-use Wgmv\SlackApi\Facades\SlackUser as SlackUserClient;
 
 class SlashIsIn extends Controller
 {
@@ -95,9 +94,9 @@ class SlashIsIn extends Controller
         }
 
         // Get the user's info
-        $userInfo = SlackUserClient::info($mentions[1][0])->user;
+        $userInfo = $this->client->getUserInfo($mentions[1][0]);
 
-        $displayName = strlen($userInfo->profile->display_name) > 0 ? $userInfo->profile->display_name : $userInfo->name;
+        $displayName = strlen($userInfo['profile']['display_name']) > 0 ? $userInfo['profile']['display_name'] : $userInfo['name'];
 
         return $this->reply("I've not seen @{$displayName} in #general yet today, so you can assume they're *@out* right now.");
     }
