@@ -10,6 +10,7 @@ use App\Token;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class GetStaffIn extends Controller
 {
@@ -28,6 +29,7 @@ class GetStaffIn extends Controller
 
     public function prepare($teamId = null)
     {
+        Log::debug(microtime(true) . ' ' . __CLASS__ . '@' . __FUNCTION__ . '#' . __LINE__);
         $this->teamId = $teamId ?? config('services.slack.team_id');
         $workspace = Token::where('team_id', $this->teamId)->first();
 
@@ -42,8 +44,10 @@ class GetStaffIn extends Controller
     public function getStatuses()
     {
         try {
+            Log::debug(microtime(true) . ' Fetching messages from API');
             $messages = $this->client->getMessagesFromToday($this->channelId)
                 ->unique('client_msg_id');
+            Log::debug(microtime(true) . ' Done');
         } catch (SlackApiException $e) {
             report($e);
 

@@ -19,16 +19,16 @@ class SlashIsIn extends Controller
         $this->teamId = $teamId ?? request('team_id');
         $workspace = Token::where('team_id', $this->teamId)->first();
 
-        Log::debug('Getting workspace channel ID');
+        Log::debug(microtime(true) . ' Getting workspace channel ID');
         $this->channelId = $workspace->getGeneralChannelId();
         Log::debug($this->channelId);
         $this->client = new SlackClient($this->teamId);
         $userId = request('user_id');
 
-        Log::debug('Getting user info');
+        Log::debug(microtime(true) . ' Getting user info');
         // Check if this user is allowed
         $userInfo = $this->client->getUserInfo($userId);
-        Log::debug('Done');
+        Log::debug(microtime(true) . ' Done');
 
         if (! UserChecker::callingUserAllowed($userInfo)) {
             return 'Sorry, this command is not available to Single Channel Guests.';
@@ -47,12 +47,12 @@ class SlashIsIn extends Controller
             return $this->reply("Only mention one person, so I know who you're looking for! E.g. */IsIn @someone*");
         }
 
-        Log::debug('Getting statuses');
+        Log::debug(microtime(true) . ' Getting statuses');
         // Get the list of who's in
         $statusData = (new GetStaffIn)
         ->prepare($this->teamId)
         ->getStatuses();
-        Log::debug('Done');
+        Log::debug(microtime(true) . ' Done');
 
         if (Arr::get($statusData, 'status') != 'success') {
             return $this->reply(
@@ -101,10 +101,10 @@ class SlashIsIn extends Controller
             return $this->reply("@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}");
         }
 
-        Log::debug('Getting info on mentioned user');
+        Log::debug(microtime(true) . ' Getting info on mentioned user');
         // Get the user's info
         $userInfo = $this->client->getUserInfo($mentions[1][0]);
-        Log::debug('Done');
+        Log::debug(microtime(true) . ' Done');
 
         $displayName = strlen($userInfo['profile']['display_name']) > 0 ? $userInfo['profile']['display_name'] : $userInfo['name'];
 
@@ -121,7 +121,7 @@ class SlashIsIn extends Controller
                         'type' => 'mrkdwn',
                         'text' => $text,
                         'verbatim' => true,
-                    ]
+                    ],
                 ])
                 ->actions([
                     [
