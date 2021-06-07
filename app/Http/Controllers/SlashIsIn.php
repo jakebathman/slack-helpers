@@ -7,6 +7,7 @@ use App\SlackClient;
 use App\Token;
 use App\UserChecker;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class SlashIsIn extends Controller
 {
