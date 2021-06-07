@@ -21,7 +21,7 @@ class SlashIsIn extends Controller
 
         Log::debug('Getting workspace channel ID');
         $this->channelId = $workspace->getGeneralChannelId();
-        Log::debug($this->$channelId);
+        Log::debug($this->channelId);
         $this->client = new SlackClient($this->teamId);
         $userId = request('user_id');
 
