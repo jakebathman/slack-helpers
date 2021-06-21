@@ -47,7 +47,7 @@ class GetStaffIn extends Controller
             Log::debug(microtime(true) . ' Fetching messages from API');
             $messages = $this->client->getMessagesFromToday($this->channelId)
                 ->unique('client_msg_id');
-            Log::debug(microtime(true) . ' Done');
+            Log::debug(microtime(true) . ' Fetching messages from API Done');
         } catch (SlackApiException $e) {
             report($e);
 

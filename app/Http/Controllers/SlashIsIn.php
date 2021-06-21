@@ -28,7 +28,7 @@ class SlashIsIn extends Controller
         Log::debug(microtime(true) . ' Getting user info');
         // Check if this user is allowed
         $userInfo = $this->client->getUserInfo($userId);
-        Log::debug(microtime(true) . ' Done');
+        Log::debug(microtime(true) . ' Getting user info Done');
 
         if (! UserChecker::callingUserAllowed($userInfo)) {
             return 'Sorry, this command is not available to Single Channel Guests.';
@@ -52,7 +52,7 @@ class SlashIsIn extends Controller
         $statusData = (new GetStaffIn)
         ->prepare($this->teamId)
         ->getStatuses();
-        Log::debug(microtime(true) . ' Done');
+        Log::debug(microtime(true) . ' Getting statuses Done');
 
         if (Arr::get($statusData, 'status') != 'success') {
             return $this->reply(
@@ -104,7 +104,7 @@ class SlashIsIn extends Controller
         Log::debug(microtime(true) . ' Getting info on mentioned user');
         // Get the user's info
         $userInfo = $this->client->getUserInfo($mentions[1][0]);
-        Log::debug(microtime(true) . ' Done');
+        Log::debug(microtime(true) . ' Getting info on mentioned user Done');
 
         $displayName = strlen($userInfo['profile']['display_name']) > 0 ? $userInfo['profile']['display_name'] : $userInfo['name'];
 
