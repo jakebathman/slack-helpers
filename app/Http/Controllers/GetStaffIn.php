@@ -114,7 +114,7 @@ class GetStaffIn extends Controller
             $user = $this->users->get($userId);
             $userInfoUpdatedAt = $user->updated_at;
 
-            if (Carbon::parse($userInfoUpdatedAt)->diffInDays() > 30) {
+            if (Carbon::parse($userInfoUpdatedAt)->diffInDays() < 30) {
                 // Nothing needs updating
                 Log::debug(microtime(true) . " Updating user info {$userId} Done (cache)");
                 return;
