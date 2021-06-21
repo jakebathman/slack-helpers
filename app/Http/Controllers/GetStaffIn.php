@@ -125,7 +125,7 @@ class GetStaffIn extends Controller
         $userInfo = $this->client->getUserInfo($userId);
 
         $displayName = empty($userInfo['profile']['display_name']) ? $userInfo['name'] : $userInfo['profile']['display_name'];
-
+        Log::debug($userInfo);
         $user = SlackUser::updateOrCreate(
             [
                 'slack_id' => $userInfo['id'],
