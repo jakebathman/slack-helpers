@@ -76,6 +76,8 @@ class GetStaffIn extends Controller
             ];
         });
 
+        Log::debug(microtime(true) . " Updating all user info");
+
         foreach ($usersMessages as $userId => $messages) {
             // Update and cache the user's info from Slack
             $this->updateUserInfo($userId);
@@ -89,6 +91,7 @@ class GetStaffIn extends Controller
                 $this->statuses[$userId] = $statusInfo;
             }
         }
+        Log::debug(microtime(true) . " Updating all user info done");
 
         return [
             'status' => 'success',
@@ -104,6 +107,8 @@ class GetStaffIn extends Controller
 
     public function updateUserInfo($userId)
     {
+        Log::debug(microtime(true) . " Updating user info {$userId}");
+
         if ($this->users->has($userId)) {
             // This is a known user, but see if their info is out of date
             $user = $this->users->get($userId);
@@ -111,6 +116,7 @@ class GetStaffIn extends Controller
 
             if (Carbon::parse($userInfoUpdatedAt)->diffInDays() > 30) {
                 // Nothing needs updating
+                Log::debug(microtime(true) . " Updating user info {$userId} Done (cache)");
                 return;
             }
         }
@@ -135,6 +141,7 @@ class GetStaffIn extends Controller
         );
 
         $this->users->put($user->slack_id, $user);
+        Log::debug(microtime(true) . " Updating user info {$userId} Done");
     }
 
     public function getUserStatus($user, $messages)
