@@ -6,9 +6,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('test', function (Request $request) {
-    return $request->all();
-});
+Route::middleware('api_key')
+    ->get('test', function (Request $request) {
+        return $request->all();
+    })
+    ->name('api.test');
 
 Route::name('slack.')->prefix('slack')
     ->middleware(['slack.verify'])
@@ -19,3 +21,6 @@ Route::name('slack.')->prefix('slack')
 
         Route::post('interaction', 'InteractionController')->name('interaction');
     });
+
+Route::middleware('api_key')
+    ->get('staff-in', 'GetStaffIn');

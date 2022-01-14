@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use App\Token;
 use Illuminate\Foundation\Testing\DatabaseMigrations;

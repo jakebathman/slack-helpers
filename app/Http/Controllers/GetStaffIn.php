@@ -67,16 +67,16 @@ class GetStaffIn extends Controller
             // Filters out non-users (e.g. bots)
             return isset($message['user']);
         })
-        ->mapToGroups(function ($message) {
-            return [
-                $message['user'] => [
-                    'text' => $message['text'],
-                    'ts' => $message['ts'],
-                ],
-            ];
-        });
+            ->mapToGroups(function ($message) {
+                return [
+                    $message['user'] => [
+                        'text' => $message['text'],
+                        'ts' => $message['ts'],
+                    ],
+                ];
+            });
 
-        Log::debug(microtime(true) . " Updating all user info");
+        Log::debug(microtime(true) . ' Updating all user info');
 
         foreach ($usersMessages as $userId => $messages) {
             // Update and cache the user's info from Slack
@@ -91,7 +91,7 @@ class GetStaffIn extends Controller
                 $this->statuses[$userId] = $statusInfo;
             }
         }
-        Log::debug(microtime(true) . " Updating all user info done");
+        Log::debug(microtime(true) . ' Updating all user info done');
 
         return [
             'status' => 'success',
@@ -199,8 +199,8 @@ class GetStaffIn extends Controller
 
             return preg_match($pattern, $message['text']);
         })
-        ->sortByDesc('ts')
-        ->values();
+            ->sortByDesc('ts')
+            ->values();
     }
 
     /**
