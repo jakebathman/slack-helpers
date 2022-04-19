@@ -140,6 +140,8 @@ class StatusMatchTest extends TestCase
             '@errand',
             '@errands',
             '@nap',
+            '@outtie',
+            '@outties',
         ];
 
         $false = [
