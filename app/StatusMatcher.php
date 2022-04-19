@@ -4,11 +4,11 @@ namespace App;
 
 class StatusMatcher
 {
-    const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne)([^\w]|$)|^in$)';
+    const PREG_IN = '([@!\+](in|ingrid|​ingrid|innie|iinne|inward|ihavearrived)([^\w]|$)|^in$)';
     const PREG_BREAK = '([@!\+](brb|break|relo|walk)([^\w]|$)|^brb$|^:(coffee|latte):$|^(:tea:|:tea_cat:)(\s*?:timer_clock:)?$|^(:coffee_cat:)|^(:diet-?coke:)$)';
-    const PREG_LUNCH = '([@!\+](lunch(ito)?|breakfast|brunch|dinner|lunching|snack(ing)?)([^\w]|$)|^lunch( time)?$)';
+    const PREG_LUNCH = '([@!\+](lunch(ito|eon)?|breakfast|brunch|dinner|lunching|snack(ing)?|banquet)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([@!\+]back([^\w]|$)|^back$)';
-    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?|nap|outties?)([^\w]|$)|^out$)';
+    const PREG_OUT = '([@!\+](out|ofnbl|ofn|oot|notin|vote|voting|therapy|errands?|nap|outties?|outage|outward|farewellminions)([^\w]|$)|^out$)';
     const PREG_SUBTEAM_MENTION = '/\<\!subteam\^(?:[A-Z0-9]+)(?:\|(.*?))?\>/i';
     const PREG_SPECIAL_MENTION = '/\<\!(here|channel|everyone)\>/i';
 

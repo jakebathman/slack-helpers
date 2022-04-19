@@ -22,6 +22,8 @@ class StatusMatchTest extends TestCase
             "I'm finally @in!",
             '@innie',
             '@iinne',
+            '@inward',
+            '@ihavearrived',
         ];
 
         $false = [
@@ -87,6 +89,8 @@ class StatusMatchTest extends TestCase
             '@lunchito',
             '@dinner',
             '@breakfast',
+            '@luncheon',
+            '@banquet',
         ];
 
         $false = [
@@ -142,6 +146,9 @@ class StatusMatchTest extends TestCase
             '@nap',
             '@outtie',
             '@outties',
+            '@outage',
+            '@outward',
+            '@farewellminions',
         ];
 
         $false = [
