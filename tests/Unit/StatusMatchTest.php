@@ -150,6 +150,7 @@ class StatusMatchTest extends TestCase
             '@outage',
             '@outward',
             '@farewellminions',
+            '@workout',
         ];
 
         $false = [
