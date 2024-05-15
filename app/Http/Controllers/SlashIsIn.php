@@ -42,6 +42,7 @@ class SlashIsIn extends Controller
         // Slack escapes @mentions to look like <@U012ABCDEF>
         $pattern = '/\<@([A-Z0-9]+)(?:\|[\w]+)?\>/';
         preg_match_all($pattern, $message, $mentions);
+        Log::debug('Checking for mentions', ['message' => $message,'mentions' => $mentions]);
 
         if (count($mentions[1]) > 1) {
             return $this->reply("Only mention one person, so I know who you're looking for! E.g. */IsIn @someone*");
