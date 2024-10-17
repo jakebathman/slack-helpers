@@ -63,7 +63,7 @@ class SlackClient
 
     public function getMessagesFromToday($channelId)
     {
-        $earliestTime = Carbon::now('America/Chicago')->setTime(3, 0)->format('U');
+        $earliestTime = Carbon::now('America/Chicago')->setTime(1, 0)->format('U');
         $allMessages = collect();
         $earliestTs = null;
         $latest = null;
