@@ -24,6 +24,7 @@ class StatusMatchTest extends TestCase
             '@iinne',
             '@inward',
             '@ihavearrived',
+            '<!subteam^SJJ4NPRNU>',
         ];
 
         $false = [
@@ -151,6 +152,7 @@ class StatusMatchTest extends TestCase
             '@outward',
             '@farewellminions',
             '@workout',
+            '<!subteam^S013Y6JHHAM>',
         ];
 
         $false = [

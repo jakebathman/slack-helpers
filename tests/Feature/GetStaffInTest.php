@@ -155,6 +155,8 @@ class GetStaffInTest extends TestCase
             '<!channel>' => '@channel',
             '<!everyone>' => '@everyone',
             '<!subteam^S12345678|@foo> and <!subteam^S98765432|@bar>' => '@foo and @bar',
+            '<!subteam^S013Y6JHHAM>' => 'S013Y6JHHAM',
+            '<!subteam^SJJ4NPRNU>' => 'SJJ4NPRNU',
 
             // These should all return unchanged
             '<@U1234ABCD>' => '<@U1234ABCD>',

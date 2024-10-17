@@ -76,7 +76,7 @@ class SlackClient
 
             $data = $this->client->conversationsHistory($channelId, [
                 'latest' => $latest,
-                'limit' => 200,
+                'limit' => 500,
             ]);
 
             if ($data['ok'] == false) {
@@ -97,6 +97,7 @@ class SlackClient
 
             $lastMessageTs = $messages->last()['ts'];
             $allMessages = $allMessages->merge($messages);
+
             if ((int)$lastMessageTs > $earliestTime && count($data['messages']) == $messages->count()) {
                 // API needs to be called again for another batch
                 $latest = $lastMessageTs;

@@ -214,6 +214,18 @@ class GetStaffIn extends Controller
     public function parseSpecialMentionsToText($text)
     {
         // Parse out subteam mentions
+        preg_match(StatusMatcher::PREG_SUBTEAM_MENTION, $text, $subteamMatches);
+
+        if ($subteamMatches[2] ?? false) {
+            // If the mention has a label, swap that in
+            $text = preg_replace(StatusMatcher::PREG_SUBTEAM_MENTION, '$2', $text);
+        } elseif ($subteamMatches[1] ?? false) {
+            // Some subteam mentions don't have a label,
+            // so we have to check the subteam mention ID
+            $text = preg_replace(StatusMatcher::PREG_SUBTEAM_MENTION, '$1', $text);
+        }
+
+        // Parse out subteam mentions
         $text = preg_replace(StatusMatcher::PREG_SUBTEAM_MENTION, '$1', $text);
 
         // Parse out special mentions
