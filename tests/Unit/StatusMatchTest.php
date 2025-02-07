@@ -61,6 +61,7 @@ class StatusMatchTest extends TestCase
             ':diet-coke:',
             ':dietcoke:',
             '@lilbreakybreak',
+            ':coffin:',
         ];
 
         $false = [
