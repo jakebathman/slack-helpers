@@ -38,6 +38,11 @@ class SlashIsIn extends Controller
 
         $message = request('text');
 
+        // A user can send "help" to get usage instructions
+        if (strtolower($message) == 'help') {
+            return $this->helpReply();
+        }
+
         // Figure out who was @mentioned in the slash command
         // Slack escapes @mentions to look like <@U012ABCDEF>
         $pattern = '/\<@([A-Z0-9]+)(?:\|[\w\W]+?)?\>/';
@@ -124,6 +129,468 @@ class SlashIsIn extends Controller
                         'verbatim' => true,
                     ],
                 ])
+                ->actions([
+                    [
+                        'type' => 'button',
+                        'text' => [
+                            'type' => 'plain_text',
+                            'text' => 'Close',
+                        ],
+                        'action_id' => 'close_results',
+                    ],
+                ])
+        );
+    }
+
+    protected function helpReply()
+    {
+        $this->replyMessage->blocks = [
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => "Hey there 👋 I'm IsInBot, but you can call me Izzy.\n\nI help everyone at Tighten see who's at work and available. I can't know your status automatically, so here's how you tell me your status and quickly see if someone else is in.",
+                ],
+            ],
+            [
+                'type' => 'header',
+                'text' => [
+                    'type' => 'plain_text',
+                    'text' => 'Status options',
+                    'emoji' => true,
+                ],
+                'level' => 3,
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => 'There are four statuses that someone can have, based on the messages they send in our status channel #isin-wfriends:',
+                ],
+            ],
+            [
+                'type' => 'table',
+                'column_settings' => [
+                    ['is_wrapped' => true],
+                    ['is_wrapped' => true],
+                    ['is_wrapped' => true],
+                    ['is_wrapped' => true],
+                ],
+                'rows' => [
+                    [
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'Status', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => "This means you're...", 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'Aliases', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'Notes', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'in', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'Here and working'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => ' '],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => ' '],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'break', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'Taking a short break away from Slack (coffee refill, walking the dog, etc.)'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'brb '],
+                                        ['type' => 'emoji', 'name' => 'tea'],
+                                        ['type' => 'text', 'text' => ' '],
+                                        ['type' => 'emoji', 'name' => 'coffee'],
+                                        ['type' => 'text', 'text' => ' '],
+                                        ['type' => 'emoji', 'name' => 'diet-coke'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'If you use '],
+                                        ['type' => 'text', 'text' => '@break', 'style' => ['code' => true]],
+                                        ['type' => 'text', 'text' => ", I'll automatically mark you back in after ~20 minutes, so no need to tell me you're back (unless you want to say "],
+                                        ['type' => 'text', 'text' => '@back', 'style' => ['code' => true]],
+                                        ['type' => 'text', 'text' => ', I always love hearing from you)'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'lunch', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'On a meal break'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'dinner, brunch, breakfast'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => ' '],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    [
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'out', 'style' => ['bold' => true]],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'Away from Slack for the rest of the day or just a long while'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => 'ofn, ofnbl, errands'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'rich_text',
+                            'elements' => [
+                                [
+                                    'type' => 'rich_text_section',
+                                    'elements' => [
+                                        ['type' => 'text', 'text' => "You'll often see "],
+                                        ['type' => 'text', 'text' => '@ofn', 'style' => ['code' => true]],
+                                        ['type' => 'text', 'text' => ' (out for now) or similar, which adds a bit of context for everyone else'],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => 'I support using `@` `!` `$` `+` or no prefix at all with these basic words, so use whatever you\'re comfortable with. `@in`, `!in`, `$in`, and `+in` all look the same to me.',
+                ],
+            ],
+            [
+                'type' => 'header',
+                'text' => [
+                    'type' => 'plain_text',
+                    'text' => 'Note your own status throughout the day',
+                    'emoji' => true,
+                ],
+                'level' => 3,
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => 'Send a message in #isin-wfriends with your current status. Most folks use *@in*, *@out*, *@lunch*, and *@break*.',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => 'If you use a prefix character (`@` `!` `$` `+`) you can put your status anywhere in your message.',
+                ],
+            ],
+            [
+                'type' => 'header',
+                'text' => [
+                    'type' => 'plain_text',
+                    'text' => ':white_check_mark: Valid status updates',
+                    'emoji' => true,
+                ],
+                'level' => 4,
+            ],
+            ['type' => 'markdown', 'text' => '> "Headed to @lunch at Chipotle!"'],
+            ['type' => 'markdown', 'text' => '> "@out til later"'],
+            ['type' => 'markdown', 'text' => '> "in"'],
+            [
+                'type' => 'header',
+                'text' => [
+                    'type' => 'plain_text',
+                    'text' => ':x: Invalid status updates',
+                    'emoji' => true,
+                ],
+                'level' => 4,
+            ],
+            ['type' => 'markdown', 'text' => '> "Headed to lunch"'],
+            ['type' => 'markdown', 'text' => '> "grabbing more coffee"'],
+            ['type' => 'markdown', 'text' => '> "hello everyone"'],
+            [
+                'type' => 'header',
+                'text' => [
+                    'type' => 'plain_text',
+                    'text' => 'Ask about someone else',
+                    'emoji' => true,
+                ],
+                'level' => 3,
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => "The point of updating your status isn't to keep tabs on you, but to let others know if you're in and available.",
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => "Use the `/isin` slash command in any channel in this workspace to see who's in, taking a break, at lunch, or out.",
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => "By default, you'll get a list of everyone who's updated their status today. But you can also add someone's @mention to get just their status:",
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '> `/isin @jakebathman`',
+                ],
+            ],
+            [
+                'type' => 'header',
+                'text' => [
+                    'type' => 'plain_text',
+                    'text' => 'FAQs',
+                    'emoji' => true,
+                ],
+                'level' => 3,
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '*How are my status updates used? Does this log my hours and keep tabs on me?*',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => "The app stores no messages/statuses, update times, etc. This is simply a tool for colleagues to see who's in the office in an all-remote workspace. Each time /isin is used, Izzy parses the Slack message history for the day, so everything's always fresh.",
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '*What if I send the wrong thing? How do you sort through it all?*',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => 'Your most recent message in #isin-wfriends determines your current status. You can edit a message and the edit takes effect immediately.',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '*Who made this?*',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => 'Jake Bathman, who you can DM here in Slack with any bugs or suggestions.',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => '*Can I see the source code?*',
+                ],
+            ],
+            [
+                'type' => 'section',
+                'text' => [
+                    'type' => 'mrkdwn',
+                    'text' => ':github: https://github.com/jakebathman/slack-helpers',
+                ],
+            ],
+            ['type' => 'divider'],
+            [
+                'type' => 'context',
+                'elements' => [
+                    [
+                        'type' => 'mrkdwn',
+                        'text' => '❓View this message again at any time with `/isin help`',
+                    ],
+                ],
+            ],
+        ];
+
+        // Return the message with a Close button
+        return response()->json(
+            $this->replyMessage
                 ->actions([
                     [
                         'type' => 'button',

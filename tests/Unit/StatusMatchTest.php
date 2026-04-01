@@ -13,6 +13,7 @@ class StatusMatchTest extends TestCase
     {
         $true = [
             '@in',
+            '$in',
             '!in',
             '+in',
             '    @in    ',
@@ -29,6 +30,7 @@ class StatusMatchTest extends TestCase
 
         $false = [
             '',
+            '$3.95',
             'in!',
             'interior',
             '@inside',
@@ -43,6 +45,7 @@ class StatusMatchTest extends TestCase
     {
         $true = [
             '@break',
+            '$break',
             '!break',
             '+break',
             '    @break    ',
@@ -79,6 +82,7 @@ class StatusMatchTest extends TestCase
     {
         $true = [
             '@lunch',
+            '$lunch',
             '!lunch',
             '+lunch',
             'lunch',
@@ -111,6 +115,7 @@ class StatusMatchTest extends TestCase
     {
         $true = [
             '@back',
+            '$back',
             '!back',
             '+back',
             '    @back    ',
@@ -133,6 +138,7 @@ class StatusMatchTest extends TestCase
     {
         $true = [
             '@out',
+            '$out',
             '!out',
             '+out',
             '    @out    ',
