@@ -99,7 +99,7 @@ class SlashIsIn extends Controller
 
         // Get the status of the mentioned person
         if ($info = $statuses->get($mentions[1][0])) {
-            return $this->reply("@{$info['display_name']} is *@{$info['status']}*. Their last message in #general was {$info['since']}:\n> {$info['last_message']}");
+            return $this->reply("@{$info['display_name']} is *@{$info['status']}*. Their last message in #isin-wfriends was {$info['since']}:\n> {$info['last_message']}");
         }
 
         Log::debug(microtime(true) . ' Getting info on mentioned user');
@@ -109,7 +109,7 @@ class SlashIsIn extends Controller
 
         $displayName = strlen($userInfo['profile']['display_name']) > 0 ? $userInfo['profile']['display_name'] : $userInfo['name'];
 
-        return $this->reply("I've not seen @{$displayName} in #general yet today, so you can assume they're *@out* right now.");
+        return $this->reply("I've not seen @{$displayName} in #isin-wfriends yet today, so you can assume they're *@out* right now.");
     }
 
     protected function reply($text)
