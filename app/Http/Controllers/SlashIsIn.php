@@ -150,7 +150,7 @@ class SlashIsIn extends Controller
                 'type' => 'section',
                 'text' => [
                     'type' => 'mrkdwn',
-                    'text' => "Hey there 👋 I'm IsInBot, but you can call me Izzy.\n\nI help everyone at Tighten see who's at work and available. I can't know your status automatically, so here's how you tell me your status and quickly see if someone else is in.",
+                    'text' => "Hey there :wave: I'm IsInBot, but you can call me Izzy.\n\nI help everyone at Tighten see who's at work and available. I can't know your status automatically, so here's how you tell me your status and quickly see if someone else is in.",
                 ],
             ],
             [
@@ -455,30 +455,6 @@ class SlashIsIn extends Controller
                 'type' => 'header',
                 'text' => [
                     'type' => 'plain_text',
-                    'text' => ':white_check_mark: Valid status updates',
-                    'emoji' => true,
-                ],
-                'level' => 4,
-            ],
-            ['type' => 'markdown', 'text' => '> "Headed to @lunch at Chipotle!"'],
-            ['type' => 'markdown', 'text' => '> "@out til later"'],
-            ['type' => 'markdown', 'text' => '> "in"'],
-            [
-                'type' => 'header',
-                'text' => [
-                    'type' => 'plain_text',
-                    'text' => ':x: Invalid status updates',
-                    'emoji' => true,
-                ],
-                'level' => 4,
-            ],
-            ['type' => 'markdown', 'text' => '> "Headed to lunch"'],
-            ['type' => 'markdown', 'text' => '> "grabbing more coffee"'],
-            ['type' => 'markdown', 'text' => '> "hello everyone"'],
-            [
-                'type' => 'header',
-                'text' => [
-                    'type' => 'plain_text',
                     'text' => 'Ask about someone else',
                     'emoji' => true,
                 ],
@@ -502,79 +478,7 @@ class SlashIsIn extends Controller
                 'type' => 'section',
                 'text' => [
                     'type' => 'mrkdwn',
-                    'text' => "By default, you'll get a list of everyone who's updated their status today. But you can also add someone's @mention to get just their status:",
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => '> `/isin @jakebathman`',
-                ],
-            ],
-            [
-                'type' => 'header',
-                'text' => [
-                    'type' => 'plain_text',
-                    'text' => 'FAQs',
-                    'emoji' => true,
-                ],
-                'level' => 3,
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => '*How are my status updates used? Does this log my hours and keep tabs on me?*',
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => "The app stores no messages/statuses, update times, etc. This is simply a tool for colleagues to see who's in the office in an all-remote workspace. Each time /isin is used, Izzy parses the Slack message history for the day, so everything's always fresh.",
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => '*What if I send the wrong thing? How do you sort through it all?*',
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => 'Your most recent message in #isin-wfriends determines your current status. You can edit a message and the edit takes effect immediately.',
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => '*Who made this?*',
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => 'Jake Bathman, who you can DM here in Slack with any bugs or suggestions.',
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => '*Can I see the source code?*',
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => ':github: https://github.com/jakebathman/slack-helpers',
+                    'text' => "By default, you'll get a list of everyone who's updated their status today. But you can also add someone's @mention to get just their status: `/isin @jakebathman`",
                 ],
             ],
             ['type' => 'divider'],
@@ -589,7 +493,7 @@ class SlashIsIn extends Controller
             ],
         ];
 
-        Log::debug(microtime(true) . (string)$this->replyMessage);
+        Log::debug(microtime(true) . (string) $this->replyMessage);
         // Return the message with a Close button
         return response()->json(
             $this->replyMessage
