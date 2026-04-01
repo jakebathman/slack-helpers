@@ -40,6 +40,7 @@ class SlashIsIn extends Controller
 
         // A user can send "help" to get usage instructions
         if (strtolower($message) == 'help') {
+            Log::debug(microtime(true) . ' Replying with help message');
             return $this->helpReply();
         }
 
@@ -588,6 +589,7 @@ class SlashIsIn extends Controller
             ],
         ];
 
+        Log::debug(microtime(true) . (string)$this->replyMessage);
         // Return the message with a Close button
         return response()->json(
             $this->replyMessage
