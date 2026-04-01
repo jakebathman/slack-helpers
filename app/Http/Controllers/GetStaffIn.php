@@ -44,7 +44,7 @@ class GetStaffIn extends Controller
     public function getStatuses()
     {
         try {
-            Log::debug(microtime(true) . ' Fetching messages from API');
+            Log::debug(microtime(true) . ' Fetching messages from API for channel ' . $this->channelId);
             $messages = $this->client->getMessagesFromToday($this->channelId)
                 ->unique('client_msg_id');
             Log::debug(microtime(true) . ' Fetching messages from API Done');

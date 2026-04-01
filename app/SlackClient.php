@@ -92,7 +92,8 @@ class SlackClient
                 );
 
             if ($messages->isEmpty()) {
-                return collect();
+                // That's all the messages we need to fetch, so we can stop
+                continue;
             }
 
             $lastMessageTs = $messages->last()['ts'];
