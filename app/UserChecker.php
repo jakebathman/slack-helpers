@@ -8,7 +8,7 @@ class UserChecker
 {
     public static function callingUserAllowed($user)
     {
-        return static::isNormalUser($user);
+        return static::isNormalUser($user) || static::isMultiChannelGuest($user);
     }
 
     public static function isSingleChannelGuest($user)
@@ -18,7 +18,8 @@ class UserChecker
 
     public static function isMultiChannelGuest($user)
     {
-        return Arr::get($user, 'is_restricted', false) && ! Arr::get($user, 'is_ultra_restricted', false);
+        return Arr::get($user, 'is_restricted', false) === true
+        && Arr::get($user, 'is_ultra_restricted', false) === false;
     }
 
     public static function isNormalUser($user)

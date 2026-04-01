@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Slack\BlockKitMessage;
 use App\SlackClient;
+use App\Slack\BlockKitMessage;
 use App\Token;
 use App\UserChecker;
 use Illuminate\Support\Arr;
@@ -42,7 +42,7 @@ class SlashIsIn extends Controller
         // Slack escapes @mentions to look like <@U012ABCDEF>
         $pattern = '/\<@([A-Z0-9]+)(?:\|[\w\W]+?)?\>/';
         preg_match_all($pattern, $message, $mentions);
-        Log::debug('Checking for mentions', ['message' => $message,'mentions' => $mentions]);
+        Log::debug('Checking for mentions', ['message' => $message, 'mentions' => $mentions]);
 
         if (count($mentions[1]) > 1) {
             return $this->reply("Only mention one person, so I know who you're looking for! E.g. */IsIn @someone*");
@@ -51,8 +51,8 @@ class SlashIsIn extends Controller
         Log::debug(microtime(true) . ' Getting statuses');
         // Get the list of who's in
         $statusData = (new GetStaffIn)
-        ->prepare($this->teamId)
-        ->getStatuses();
+            ->prepare($this->teamId)
+            ->getStatuses();
         Log::debug(microtime(true) . ' Getting statuses Done');
 
         if (Arr::get($statusData, 'status') != 'success') {
@@ -82,10 +82,10 @@ class SlashIsIn extends Controller
 
                 $text[] = "*{$emoji} {$group}*";
                 $text[] = $statusGroups[$group]->map(function ($status) use ($emoji) {
-                        return "@{$status['display_name']}";
+                    return "@{$status['display_name']}";
                 })
-                ->sort()
-                ->implode("\n");
+                    ->sort()
+                    ->implode("\n");
 
                 $text[] = '';
             }
@@ -133,7 +133,7 @@ class SlashIsIn extends Controller
                         ],
                         'action_id' => 'close_results',
                     ],
-            ])
+                ])
         );
     }
 }

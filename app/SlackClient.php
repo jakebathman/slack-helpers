@@ -3,8 +3,8 @@
 namespace App;
 
 use App\Exceptions\SlackApiException;
-use App\Slack\SlackClient as SlackApiClient;
 use App\SlackUser;
+use App\Slack\SlackClient as SlackApiClient;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -38,12 +38,12 @@ class SlackClient
     public function getUsers()
     {
         return SlackUser::where('team_id', $this->teamId)
-        ->get()
-        ->mapWithKeys(
-            function ($user) {
-                return [$user->slack_id => $user];
-            }
-        );
+            ->get()
+            ->mapWithKeys(
+                function ($user) {
+                    return [$user->slack_id => $user];
+                }
+            );
     }
 
     public function getUserInfo($userId)
@@ -51,12 +51,12 @@ class SlackClient
         $endpoint = static::BASE . 'users.info';
 
         $response = Http::asForm()
-        ->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])
-        ->post($endpoint, [
-            'user' => $userId,
-        ]);
+            ->withHeaders([
+                'Authorization' => 'Bearer ' . $this->token,
+            ])
+            ->post($endpoint, [
+                'user' => $userId,
+            ]);
 
         return Arr::get($response, 'user', []);
     }
@@ -87,19 +87,19 @@ class SlackClient
                 ->filter(
                     function ($message) use ($earliestTime) {
                         // Keeps messages after $earliestTime
-                        return (int)$message['ts'] >= $earliestTime;
+                        return (int) $message['ts'] >= $earliestTime;
                     }
                 );
 
-            if ($messages->isEmpty()) {
+            if ($messages->isEmpty() && $i >= 1) {
                 // That's all the messages we need to fetch, so we can stop
-                continue;
+                break;
             }
 
             $lastMessageTs = $messages->last()['ts'];
             $allMessages = $allMessages->merge($messages);
 
-            if ((int)$lastMessageTs > $earliestTime && count($data['messages']) == $messages->count()) {
+            if ((int) $lastMessageTs > $earliestTime && count($data['messages']) == $messages->count()) {
                 // API needs to be called again for another batch
                 $latest = $lastMessageTs;
                 // dump("calling again for before $latest");
@@ -107,6 +107,7 @@ class SlackClient
             }
 
             $earliestTs = $lastMessageTs;
+            break;
         }
 
         return $allMessages;
