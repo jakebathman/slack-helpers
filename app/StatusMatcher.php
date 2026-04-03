@@ -4,7 +4,7 @@ namespace App;
 
 class StatusMatcher
 {
-    const PREG_IN = '([$@!\+](in|ingrid|​ingrid|innie|iinne|inward|ihavearrived)([^\w]|$)|^in$|SJJ4NPRNU)';
+    const PREG_IN = '([$@!\+](in|ingrid|​ingrid|innie|iinne|inward|ihavearrived)([^\w]|$)|^in$|SJJ4NPRNU|U0AQ3SPNQNT)';
     const PREG_BREAK = '([$@!\+](brb|break|relo|walk|lilbreakybreak)([^\w]|$)|^brb$|^:(coffee|latte|coffin):$|^(:tea:|:tea_cat:)(\s*?:timer_clock:)?$|^(:coffee_cat:)|^(:diet-?coke:)$)';
     const PREG_LUNCH = '([$@!\+](lunch(ito|eon)?|breakfast|brunch|dinner|lunching|snack(ing)?|banquet)([^\w]|$)|^lunch( time)?$)';
     const PREG_BACK = '([$@!\+]back([^\w]|$)|^back$)';

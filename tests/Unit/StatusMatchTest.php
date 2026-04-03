@@ -25,7 +25,9 @@ class StatusMatchTest extends TestCase
             '@iinne',
             '@inward',
             '@ihavearrived',
-            '<!subteam^SJJ4NPRNU>',
+            '<!subteam^SJJ4NPRNU>', // old @in user group
+            '<@U0AQ3SPNQNT>', // @in bot user
+            '<@U0AQ3SPNQNT> :spiderman-dance:', // @in bot user
         ];
 
         $false = [
