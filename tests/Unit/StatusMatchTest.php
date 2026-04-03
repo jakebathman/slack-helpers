@@ -67,6 +67,7 @@ class StatusMatchTest extends TestCase
             ':dietcoke:',
             '@lilbreakybreak',
             ':coffin:',
+            '<@U0AQR1P837Y>', // @break bot user
         ];
 
         $false = [
@@ -100,6 +101,7 @@ class StatusMatchTest extends TestCase
             '@breakfast',
             '@luncheon',
             '@banquet',
+            '<@U0ARMBJRB0Q>', // @lunch bot user
         ];
 
         $false = [
@@ -123,6 +125,7 @@ class StatusMatchTest extends TestCase
             '    @back    ',
             'back',
             "I'm @back!",
+            '<@U0AQPLWPC1K>', // @back bot user
         ];
 
         $false = [
@@ -161,7 +164,8 @@ class StatusMatchTest extends TestCase
             '@outward',
             '@farewellminions',
             '@workout',
-            '<!subteam^S013Y6JHHAM>',
+            '<!subteam^S013Y6JHHAM>', // old @out user group
+            '<@U0AQLMQ9L03>', // @out bot user
         ];
 
         $false = [
