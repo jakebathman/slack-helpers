@@ -2,13 +2,14 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Exceptions\SlackApiError;
 use App\Slack\SlackClient;
 use Tests\TestCase;
 
 class SlackClientTest extends TestCase
 {
-    /** @test */
+    #[Test]
     function it_calls_api_methods_successfully()
     {
         $client = app(SlackClient::class);
@@ -20,7 +21,7 @@ class SlackClientTest extends TestCase
         $this->assertEquals('some return value', $response['args']['foo']);
     }
 
-    /** @test */
+    #[Test]
     function it_throws_errors_when_slack_returns_not_ok()
     {
         $this->withoutExceptionHandling();

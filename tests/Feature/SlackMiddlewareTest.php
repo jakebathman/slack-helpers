@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Exceptions\SlackApiVerificationException;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
@@ -18,7 +19,7 @@ class SlackMiddlewareTest extends TestCase
         $this->timestamp = Carbon::now()->timestamp;
     }
 
-    /** @test */
+    #[Test]
     function middleware_correctly_validates_signature()
     {
         $response = $this->withHeaders([
@@ -31,7 +32,7 @@ class SlackMiddlewareTest extends TestCase
         $response->assertJson(['ok' => true]);
     }
 
-    /** @test */
+    #[Test]
     function middleware_correctly_validates_signature_with_request_body()
     {
         $body = ['text' => 'foo bar'];
@@ -46,7 +47,7 @@ class SlackMiddlewareTest extends TestCase
         $response->assertJson(['ok' => true]);
     }
 
-    /** @test */
+    #[Test]
     function middleware_rejects_invalid_signature()
     {
         $this->expectException(SlackApiVerificationException::class);

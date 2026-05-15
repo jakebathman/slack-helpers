@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\GetStaffIn;
+use App\Http\Controllers\InteractionController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
@@ -19,8 +22,8 @@ Route::name('slack.')->prefix('slack')
             return response()->json(['ok' => true]);
         })->name('test');
 
-        Route::post('interaction', 'InteractionController')->name('interaction');
+        Route::post('interaction', InteractionController::class)->name('interaction');
     });
 
 Route::middleware('api_key')
-    ->get('staff-in', 'GetStaffIn');
+    ->get('staff-in', GetStaffIn::class);

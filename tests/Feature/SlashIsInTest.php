@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Factories\SlackApiUserFactory;
 use App\Token;
 use App\UserChecker;
@@ -13,10 +14,10 @@ class SlashIsInTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /** @test */
+    #[Test]
     public function it_does_not_allow_single_channel_guest_users()
     {
-        factory(Token::class)->create([
+        Token::factory()->create([
             'team_id' => 'T0250LTFC',
             'general_channel_id' => 'ABCD1234',
         ]);
@@ -44,10 +45,10 @@ class SlashIsInTest extends TestCase
         $response->assertSeeText('Sorry, this command is not available to Single Channel Guests.');
     }
 
-    /** @test */
+    #[Test]
     public function it_does_allow_multi_channel_guest_users()
     {
-        factory(Token::class)->create([
+        Token::factory()->create([
             'team_id' => 'T0250LTFC',
             'general_channel_id' => 'ABCD1234',
         ]);
@@ -80,10 +81,10 @@ class SlashIsInTest extends TestCase
         $response->assertDontSeeText('Sorry, this command is not available to Single Channel Guests.');
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_full_workspace_users()
     {
-        factory(Token::class)->create([
+        Token::factory()->create([
             'team_id' => 'T0250LTFC',
             'general_channel_id' => 'ABCD1234',
         ]);
@@ -116,7 +117,7 @@ class SlashIsInTest extends TestCase
         $response->assertDontSeeText('Sorry, this command is not available to Single Channel Guests.');
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_single_channel_guest_users_correctly()
     {
         $user = app(SlackApiUserFactory::class)
@@ -130,7 +131,7 @@ class SlashIsInTest extends TestCase
         $this->assertFalse(UserChecker::isNormalUser($user));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_multi_channel_guest_users_correctly()
     {
         $user = app(SlackApiUserFactory::class)
@@ -143,7 +144,7 @@ class SlashIsInTest extends TestCase
         $this->assertFalse(UserChecker::isNormalUser($user));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_normal_users_correctly()
     {
         $user = app(SlackApiUserFactory::class)
@@ -155,7 +156,7 @@ class SlashIsInTest extends TestCase
         $this->assertFalse(UserChecker::isMultiChannelGuest($user));
     }
 
-    /** @test */
+    #[Test]
     public function it_determines_allowed_users_correctly()
     {
         // Multi-channel guest

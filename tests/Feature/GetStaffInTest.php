@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Factories\SlackApiMessageFactory;
 use App\Http\Controllers\GetStaffIn;
 use App\SlackUser;
@@ -12,10 +13,10 @@ class GetStaffInTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     function it_can_get_correct_out_user_status()
     {
-        $user = factory(SlackUser::class)->create();
+        $user = SlackUser::factory()->create();
         $userId = $user->slack_id;
 
         // Make some messages for the user,
@@ -32,10 +33,10 @@ class GetStaffInTest extends TestCase
         $this->assertEquals($status['status'], 'out');
     }
 
-    /** @test */
+    #[Test]
     function it_can_get_correct_in_user_status()
     {
-        $user = factory(SlackUser::class)->create();
+        $user = SlackUser::factory()->create();
         $userId = $user->slack_id;
 
         // Make some messages for the user,
@@ -52,10 +53,10 @@ class GetStaffInTest extends TestCase
         $this->assertEquals($status['status'], 'in');
     }
 
-    /** @test */
+    #[Test]
     function it_can_get_correct_break_status()
     {
-        $user = factory(SlackUser::class)->create();
+        $user = SlackUser::factory()->create();
         $userId = $user->slack_id;
 
         // Make some messages for the user,
@@ -73,10 +74,10 @@ class GetStaffInTest extends TestCase
         $this->assertEquals($status['status'], 'break');
     }
 
-    /** @test */
+    #[Test]
     function it_can_get_correct_status_after_break_expires()
     {
-        $user = factory(SlackUser::class)->create();
+        $user = SlackUser::factory()->create();
         $userId = $user->slack_id;
 
         $messages = collect()
@@ -92,10 +93,10 @@ class GetStaffInTest extends TestCase
         $this->assertEquals($status['status'], 'in');
     }
 
-    /** @test */
+    #[Test]
     function it_can_get_correct_status_after_walk_expires()
     {
-        $user = factory(SlackUser::class)->create();
+        $user = SlackUser::factory()->create();
         $userId = $user->slack_id;
 
         // Walk type breaks are 30 minutes long
@@ -125,7 +126,7 @@ class GetStaffInTest extends TestCase
         $this->assertEquals($status['status'], 'in');
     }
 
-    /** @test */
+    #[Test]
     function it_prepares_user_messages()
     {
         $messages = collect()
@@ -145,7 +146,7 @@ class GetStaffInTest extends TestCase
         $this->assertEquals('@in', $prepared->last()['text']);
     }
 
-    /** @test */
+    #[Test]
     function it_parses_at_mentions_to_text()
     {
         // Only user group and special mentions should be parsed

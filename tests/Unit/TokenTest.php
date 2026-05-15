@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Token;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\Http;
@@ -11,13 +12,13 @@ class TokenTest extends TestCase
 {
     use DatabaseMigrations;
 
-    /** @test */
+    #[Test]
     function it_returns_channel_id_from_database()
     {
         $teamId = 'T0250LTFC';
         $generalChannelId = 'ABCD1234';
 
-        factory(Token::class)->create([
+        Token::factory()->create([
             'team_id' => $teamId,
             'general_channel_id' => $generalChannelId,
         ]);
@@ -27,13 +28,13 @@ class TokenTest extends TestCase
         $this->assertEquals($generalChannelId, $token->getGeneralChannelId());
     }
 
-    /** @test */
+    #[Test]
     function it_updates_model_with_channel_id_from_api()
     {
         $teamId = 'T0250LTFC';
         $generalChannelId = 'ABCD1234';
 
-        factory(Token::class)->create([
+        Token::factory()->create([
             'team_id' => $teamId,
         ]);
 

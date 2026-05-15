@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ApiKeyMiddlewareTest extends TestCase
@@ -13,7 +14,7 @@ class ApiKeyMiddlewareTest extends TestCase
         config(['app.api_key' => 'abcd1234']);
     }
 
-    /** @test */
+    #[Test]
     public function middleware_allows_correct_key()
     {
         $response = $this->get(route('api.test', ['key' => 'abcd1234']));
@@ -21,7 +22,7 @@ class ApiKeyMiddlewareTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function middleware_disallows_incorrect_key()
     {
         $response = $this->get(route('api.test', ['key' => 'wxyz0987']));
@@ -29,7 +30,7 @@ class ApiKeyMiddlewareTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
+    #[Test]
     public function middleware_disallows_missing_key()
     {
         $response = $this->get(route('api.test'));

@@ -3,10 +3,16 @@
 namespace App;
 
 use App\Slack\SlackClient;
+use Database\Factories\TokenFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Token extends Model
 {
+    use HasFactory;
+
+    protected static string $factory = TokenFactory::class;
+
     public $guarded = [];
 
     public function getGeneralChannelId()

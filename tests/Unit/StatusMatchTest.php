@@ -2,13 +2,14 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Http\Controllers\GetStaffIn;
 use App\StatusMatcher;
 use Tests\TestCase;
 
 class StatusMatchTest extends TestCase
 {
-    /** @test */
+    #[Test]
     function it_matches_in_status()
     {
         $true = [
@@ -42,7 +43,7 @@ class StatusMatchTest extends TestCase
         $this->runRegexTests('hasIn', $true, $false);
     }
 
-    /** @test */
+    #[Test]
     function it_matches_break_status()
     {
         $true = [
@@ -80,7 +81,7 @@ class StatusMatchTest extends TestCase
         $this->runRegexTests('hasBreak', $true, $false);
     }
 
-    /** @test */
+    #[Test]
     function it_matches_lunch_status()
     {
         $true = [
@@ -114,7 +115,7 @@ class StatusMatchTest extends TestCase
         $this->runRegexTests('hasLunch', $true, $false);
     }
 
-    /** @test */
+    #[Test]
     function it_matches_back_status()
     {
         $true = [
@@ -138,7 +139,7 @@ class StatusMatchTest extends TestCase
         $this->runRegexTests('hasBack', $true, $false);
     }
 
-    /** @test */
+    #[Test]
     function it_matches_out_status()
     {
         $true = [
